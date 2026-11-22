@@ -9,6 +9,7 @@ const WORLD = GW * BLOCK;
 const PLAYER_R = 0.32;
 const EYE = 1.62;
 const PIXEL_SCALE = 3;
+const GAME_VERSION = '3.0.0';
 // All probabilities are evaluated once at their encounter/room boundary.
 const ENCOUNTER_RULES = Object.freeze({
   maximumRegulars: 4,

@@ -85,4 +85,5 @@
   #overlay.white .shop-title{font-size:clamp(30px,8vw,60px)}
   #overlay.white .menu-controls{font-size:10px;color:#929292;letter-spacing:2px}
   #overlay.white .menu-foot{position:absolute;bottom:20px;color:#898d88;font-size:10px;letter-spacing:3px}
+  #overlay.white .menu-version{position:absolute;top:18px;right:20px;font:12px/1.4 ui-monospace,"Courier New",monospace;color:#555957;letter-spacing:1px;pointer-events:none}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}

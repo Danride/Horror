@@ -91,6 +91,7 @@
   #overlay.white .shop-title{font-size:clamp(30px,8vw,60px)}
   #overlay.white .menu-controls{font-size:10px;color:#929292;letter-spacing:2px}
   #overlay.white .menu-foot{position:absolute;bottom:20px;color:#898d88;font-size:10px;letter-spacing:3px}
+  #overlay.white .menu-version{position:absolute;top:18px;right:20px;font:12px/1.4 ui-monospace,"Courier New",monospace;color:#555957;letter-spacing:1px;pointer-events:none}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
 </style>
 </head>
@@ -3983,6 +3984,7 @@ const WORLD = GW * BLOCK;
 const PLAYER_R = 0.32;
 const EYE = 1.62;
 const PIXEL_SCALE = 3;
+const GAME_VERSION = '3.0.0';
 // All probabilities are evaluated once at their encounter/room boundary.
 const ENCOUNTER_RULES = Object.freeze({
   maximumRegulars: 4,
@@ -6327,7 +6329,7 @@ let axeSkin='original';try{const saved=localStorage.getItem('palata13.axeSkin');
 function applyAxeSkin(key){if(!Object.hasOwn(AXE_SKINS,key))return;axeSkin=key;axeAsset.material.color.setHex(AXE_SKINS[key]);try{localStorage.setItem('palata13.axeSkin',key);}catch{}}
 applyAxeSkin(axeSkin);
 function showShop(){overlayEl.classList.add('white');overlayEl.innerHTML='<div class="kicker">ПАЛАТА 13 / СНАРЯЖЕНИЕ</div><h1 class="shop-title">МАГАЗИН</h1><p>Оформление топора · бесплатно</p><div class="menu-buttons">'+Object.entries({original:'ОРИГИНАЛ',graphite:'ГРАФИТ'}).map(([k,v])=>'<button class="btn" data-menu="axe" data-skin="'+k+'">'+v+(axeSkin===k?' ✓':'')+'</button>').join('')+'<button class="btn secondary" data-menu="back">НАЗАД</button></div>';overlayEl.style.display='flex';}
-showStartScreen=function(){overlayEl.classList.add('white');overlayEl.innerHTML='<div class="kicker">PSX HORROR &nbsp; / &nbsp; НОЧНАЯ СМЕНА</div><h1>ПАЛАТА<br>13</h1><div class="menu-rule"></div><p>Бесконечные этажи заброшенной больницы. Ищи жёлтую дверь.</p><p style="color:#8b302c;font-weight:bold">РЕКОРД: ЭТАЖ '+bestFloor+' · '+bestDistance+' М</p><div class="menu-buttons"><button class="btn" data-menu="start">НАЧАТЬ ЗАБЕГ</button><button class="btn secondary" data-menu="shop">МАГАЗИН</button></div><p class="menu-controls">WASD · SHIFT · E · ЛКМ</p>';overlayEl.style.display='flex';};
+showStartScreen=function(){overlayEl.classList.add('white');overlayEl.innerHTML='<div class="menu-version">v'+GAME_VERSION+'</div><div class="kicker">PSX HORROR &nbsp; / &nbsp; НОЧНАЯ СМЕНА</div><h1>ПАЛАТА<br>13</h1><div class="menu-rule"></div><p>Бесконечные этажи заброшенной больницы. Ищи жёлтую дверь.</p><p style="color:#8b302c;font-weight:bold">РЕКОРД: ЭТАЖ '+bestFloor+' · '+bestDistance+' М</p><div class="menu-buttons"><button class="btn" data-menu="start">НАЧАТЬ ЗАБЕГ</button><button class="btn secondary" data-menu="shop">МАГАЗИН</button></div><p class="menu-controls">WASD · SHIFT · E · ЛКМ</p>';overlayEl.style.display='flex';};
 
 
 // ===== game/startup.js =====
