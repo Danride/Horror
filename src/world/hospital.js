@@ -43,6 +43,7 @@ function safeFurniturePlacement(r,g,wanted,offset){
   for(const [a,b] of roomLinks){if(a!==r&&b!==r)continue;const q=a===r?b:a,tx=q.x>r.x?cx+hx:q.x<r.x?cx-hx:cx,tz=q.z>r.z?cz+hz:q.z<r.z?cz-hz:cz;
     reserved.push({min:{x:Math.min(cx,tx)-.72,z:Math.min(cz,tz)-.72},max:{x:Math.max(cx,tx)+.72,z:Math.max(cz,tz)+.72}});}
   if(r.kind==='exit'&&exitDoor){const x=exitDoor.x,z=exitDoor.z;reserved.push({min:{x:Math.min(cx,x)-1.15,z:Math.min(cz,z)-1.15},max:{x:Math.max(cx,x)+1.15,z:Math.max(cz,z)+1.15}});}
+  for(const l of lockers.filter(l=>l.room===r)){const p=lockerFront(l);reserved.push({min:{x:p.x-.45,z:p.z-.45},max:{x:p.x+.45,z:p.z+.45}});}
   let best=null;const sides=[wanted,...['E','W','S','N'].filter(s=>s!==wanted)];
   function overlap(a,b,gap=0){return Math.max(0,Math.min(a.max.x+gap,b.max.x)-Math.max(a.min.x-gap,b.min.x))*Math.max(0,Math.min(a.max.z+gap,b.max.z)-Math.max(a.min.z-gap,b.min.z));}
   for(const s of sides)for(const o of [offset,-offset,0,.45,-.45]){const b=snapRoomWall(r,g,s,o);const conflict=reserved.some(q=>overlap(b,q,.05)>0)||furnitureColliders.some(q=>overlap(b,q,.12)>0)||!clearBoxInRoom(b);if(!conflict){best={s,o};break;}}
@@ -74,9 +75,20 @@ function hospitalFurniture(r,idx){
   }
 }
 function boxLocker(g,s,d){for(const x of [-.40,.40])propBox(g,s,x,1.13,0,.065,2.26,.62);propBox(g,s,0,2.23,0,.86,.065,.62);propBox(g,s,0,.04,0,.86,.08,.62);propBox(g,d,0,1.13,.29,.75,2.16,.05);const h=new THREE.Group();h.position.set(-.37,0,-.32);g.add(h);propBox(h,d,.37,1.13,0,.73,2.12,.055);for(let i=0;i<4;i++)propBox(h,s,.37,1.68+i*.06,-.035,.42,.024,.025);propBox(h,s,.62,1.05,-.05,.07,.22,.07);return h;}
+function extraRoomFurniture(r,kind,offset){
+  const g=new THREE.Group(),steel=propMat(isSafeFloor()?0x999d97:0x555b59),fabric=propMat(isSafeFloor()?0x85504a:0x394743),wood=propMat(isSafeFloor()?0xb6a08c:0x53483c),dark=propMat(0x353630),white=propMat(0xb5b6ad);const box=(m,x,y,z,w,h,d)=>propBox(g,m,x,y,z,w,h,d);
+  if(kind===0){box(fabric,0,.51,0,1.55,.22,.59);box(fabric,0,.90,.25,1.55,.67,.14);for(const x of [-.66,.66])box(steel,x,.26,0,.10,.52,.48);}
+  else if(kind===1){for(const x of [-.44,.44])box(wood,x,.85,0,.08,1.7,.48);for(const y of [.15,.77,1.43])box(wood,0,y,0,.95,.09,.48);for(let i=0;i<4;i++)box(white,-.32+i*.20,.91,0,.13,.19,.32);}
+  else if(kind===2){box(dark,0,.23,0,.42,.46,.42);if(isSafeFloor()){box(wood,0,.44,0,.34,.08,.34);for(let i=0;i<5;i++){const leaf=box(propMat(0x53694b),Math.sin(i*1.9)*.15,.68+i*.10,Math.cos(i*1.9)*.13,.23,.35,.18);leaf.rotation.z=(i%2?1:-1)*.45;}}else box(steel,0,.45,0,.46,.065,.46);}
+  else if(kind===3){box(steel,0,.15,0,1.25,.09,.39);for(const x of [-.57,.57])box(steel,x,1.03,0,.065,2.06,.065);box(fabric,0,1.14,0,1.12,1.68,.06);}
+  else if(kind===4){box(wood,0,.66,0,.66,.12,.58);for(const x of [-.25,.25])for(const z of [-.22,.22])box(steel,x,.32,z,.065,.64,.065);box(white,0,.79,0,.28,.18,.35);}
+  else{box(steel,0,.51,0,.77,1.02,.49);box(white,0,1.04,0,.84,.14,.61);box(dark,0,.55,-.26,.53,.78,.035);box(steel,.18,.65,-.29,.12,.06,.035);}
+  return putDecoration(r,g,offset);
+}
 function buildHospital(){
   disposeTree(hospitalGroup);for(const t of hospitalTextures)t.dispose();hospitalTextures=[];doors=[];lockers=[];hospitalChairs=[];furnitureColliders=[];hidden=null;axePivot.visible=true;visitedRooms=new Set();currentRoom=null;threatWarning=0;threatLife=0;threatCooldown=Math.max(8,16-(floor-1)*1.3);threatCount=0;interactHeld=false;
   receptionist=null;vendingMachines=[];const w=ward();if(isSafeFloor())buildSafeDecor();else rooms.forEach((r,i)=>{r.label=r.kind==='start'?w.name:r.kind==='exit'?'ВЫХОД':r.falseExit?'ВЫХОД':r.secret?'Подсобная':r.layout==='corridor'?'Коридор':r.layout==='hall'?'Зал':r.layout==='nested'?'Блок кабинетов':w.labels[(i-1+w.labels.length)%w.labels.length];r.number=r.branch?String(floor).padStart(2,'0')+'-'+String(r.parentSequence).padStart(2,'0')+'Б'+r.branchNumber:String(floor).padStart(2,'0')+'-'+String(r.sequence).padStart(2,'0');hospitalFurniture(r,i);});
+  rooms.forEach((r,i)=>{if(r.layout==='nested'||r.layout==='narrow')return;const count=isSafeFloor()?5:r.layout==='hall'?5:3;for(let n=0;n<count;n++){const kind=isSafeFloor()?[0,1,2,4,5][(i+n)%5]:(i+n*2)%6;extraRoomFurniture(r,kind,n%2?-.45:.45);}});
   for(let i=0;i<roomLinks.length;i++){
     const [a,b,open]=roomLinks[i];if(open)continue;const x=cellCX((a.x+b.x)/2),z=cellCX((a.z+b.z)/2),axis=a.x!==b.x?'x':'z';
     const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=Math.atan2(b.x-a.x,b.z-a.z);hospitalGroup.add(g);

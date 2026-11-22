@@ -6,7 +6,7 @@ const axeAsset=new THREE.Mesh(buildBoneGeometry(importedAxe.elements,[0,0,0],imp
 axeAsset.scale.setScalar(.035);axeAsset.position.y=-.17;axe.add(axeAsset);
 
 let residentType=null,eventCabinets=[],hospitalChairs=[];
-const isKey=m=>m.type==='granny'||m.type==='multi';
+const isKey=m=>m.type==='granny'||m.type==='multi'||m.type==='enema';
 const isZombie=m=>m.type==='patient'||m.type==='orderly';
 const pick=items=>items.length?items[Math.random()*items.length|0]:null;
 function placeResident(type,r){
@@ -19,18 +19,27 @@ function placeResident(type,r){
 function lockerFront(l){const angle=l.group.rotation.y;return {x:l.x-Math.sin(angle)*.95,z:l.z-Math.cos(angle)*.95};}
 function freeLocker(l){const p=lockerFront(l);return !l.occupied&&l.room.kind!=='start'&&!circleHits(p.x,p.z,.28)&&!furnitureHit(p.x,p.z);}
 function zombieMode(roll=Math.random()){const r=ENCOUNTER_RULES;return roll<r.zombieDoor?'door':roll<r.zombieDoor+r.zombieLocker?'locker':roll<r.zombieDoor+r.zombieLocker+r.zombieWandering?'wander':'buried';}
+function cornerSpot(r){
+  const spots=[];for(const a of [-1,1])for(const b of [-1,1])for(const inset of [.25,.70,1.1]){const x=cellCX(r.x)+a*((r.hx+.5)*BLOCK-inset-.32),z=cellCX(r.z)+b*((r.hz+.5)*BLOCK-inset-.32);if(!circleHits(x,z,.35)&&!furnitureHit(x,z)&&!monsters.some(m=>!m.dead&&Math.hypot(m.pos.x-x,m.pos.z-z)<2))spots.push(new THREE.Vector3(x,0,z));}
+  return spots.sort((a,b)=>Math.min(...lamps.map(l=>Math.hypot(l.pos.x-b.x,l.pos.z-b.z)))-Math.min(...lamps.map(l=>Math.hypot(l.pos.x-a.x,l.pos.z-a.z))))[0]||null;
+}
 function spawnRegular(mode,usedRooms=new Set()){
-  const pool=rooms.filter(r=>r.kind==='normal'&&!usedRooms.has(r)),r=pick(pool)||pick(rooms.filter(q=>q.kind==='normal'));if(!r)return null;
+  const pool=rooms.filter(r=>r.kind==='normal'&&!usedRooms.has(r));let r=pick(pool);if(!r)return null;
   const type=mode==='buried'?'buried':Math.random()<.55?'patient':'orderly';let pos=new THREE.Vector3(cellCX(r.x),0,cellCX(r.z)),d=null,l=null;
-  if(mode==='door'){d=pick(doors.filter(q=>!q.zombie&&q.a.kind!=='start'&&q.b.kind!=='start'))||pick(doors.filter(q=>!q.zombie));if(d){const dx=Math.sign(d.b.x-d.a.x),dz=Math.sign(d.b.z-d.a.z);pos.set(d.x+dx*1.5,0,d.z+dz*1.5);}else mode='wander';}
-  if(mode==='locker'){l=pick(lockers.filter(freeLocker));if(l){pos.set(l.x,0,l.z);l.occupied=true;}else mode='wander';}
-  const m=makeMonster(type,pos);m.mode=mode==='door'?'door-wait':mode==='locker'?'locker-wait':'wander';m.concealed=!!(d||l);m.mesh.visible=!m.concealed;m.door=d;m.locker=l;m.role='regular';m.patrol=null;if(d)d.zombie=m;monsters.push(m);usedRooms.add(r);return m;
+  if(mode==='door'){d=pick(doors.filter(q=>!q.zombie&&pool.includes(q.b)&&q.a.kind!=='start'))||pick(doors.filter(q=>!q.zombie&&pool.includes(q.b)));if(d){r=d.b;const dx=Math.sign(d.b.x-d.a.x),dz=Math.sign(d.b.z-d.a.z);pos.set(d.x+dx*1.5,0,d.z+dz*1.5);}else mode='wander';}
+  if(mode==='locker'){l=pick(lockers.filter(q=>freeLocker(q)&&pool.includes(q.room)));if(l){r=l.room;pos.set(l.x,0,l.z);l.occupied=true;}else mode='wander';}
+  if(mode==='wander'&&type!=='buried'&&Math.random()<.65){const corner=cornerSpot(r);if(corner){pos.copy(corner);mode='corner';}}
+  const m=makeMonster(type,pos);m.mode=mode==='door'?'door-wait':mode==='locker'?'locker-wait':mode==='corner'?'corner-wait':'wander';m.concealed=!!(d||l);m.mesh.visible=!m.concealed;m.door=d;m.locker=l;m.role='regular';m.homeRoom=r;m.patrol=null;if(d)d.zombie=m;if(mode==='corner')m.mesh.userData.rig.model.scale.y=m.mesh.userData.rig.asset.scale*.68;monsters.push(m);usedRooms.add(r);return m;
 }
 function spawnFloorMonsters(){
   if(isSafeFloor()){residentType=null;return;}
+  if(floorType==='hall'){
+    const hall=rooms.find(r=>r.layout==='hall');residentType='enema';const boss=placeResident('enema',hall);boss.bossRoom=hall;boss.bossAwake=false;boss.homeRoom=hall;
+    const used=new Set([hall]);for(let i=0;i<Math.min(2,1+Math.floor(floor/10));i++)spawnRegular('wander',used);return;
+  }
   residentType=floor===1?'granny':floor===2?'multi':Math.random()<.5?'granny':'multi';
   const main=rooms.filter(r=>!r.branch&&r.kind==='normal'),mid=main.slice(Math.max(0,Math.floor(main.length*.32)),Math.max(1,Math.ceil(main.length*.8))),r=mid[Math.random()*mid.length|0]||main[0]||rooms[1];
-  placeResident(residentType,r);const used=new Set([r]),count=Math.floor(Math.random()*(ENCOUNTER_RULES.maximumRegulars+1));for(let i=0;i<count;i++)spawnRegular(zombieMode(),used);
+  const resident=placeResident(residentType,r);if(resident)resident.homeRoom=r;const used=new Set([r]),count=Math.min(ENCOUNTER_RULES.maximumRegulars,Math.floor(Math.random()*(ENCOUNTER_RULES.maximumRegulars+1))+Math.floor((floor-1)/12));for(let i=0;i<count;i++)spawnRegular(zombieMode(),used);
 }
 function onPlayerOpenDoor(d){
   d.autoBlock=0;const m=d.zombie;if(!m||m.dead||m.mode!=='door-wait')return;
@@ -48,6 +57,10 @@ function zombieCharge(m){
   m.concealed=!!m.emergingLocker;m.mode='emerge';m.emergeT=0;m.alert=12;m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];m.path=null;m.pathTimer=0;playSample('zombieCry',()=>m.pos,.95,m);turnMonster(m,player.x,player.z,1);m.locker=null;
 }
 function updateZombie(m,dt){
+  if(m.mode==='corner-wait'){
+    m.alert=0;m.chasing=false;const dx=m.pos.x-player.x,dz=m.pos.z-player.z,d=Math.hypot(dx,dz),look=(-Math.sin(yaw)*dx-Math.cos(yaw)*dz)/Math.max(d,.01);turnMonster(m,player.x,player.z,dt);poseCreature(m.mesh,'idle',dt,.45);
+    if(d<4.8&&(look>.45||d<1.7)&&hasLOS(player.x,player.z,m.pos.x,m.pos.z)&&!closedDoorBetween(player.x,player.z,m.pos.x,m.pos.z)){playSample('scaryImpact',()=>m.pos,.6,m);zombieCharge(m);}return 0;
+  }
   if(m.mode==='door-wait'){m.alert=0;return 0;}
   if(m.mode==='door-reveal'){
     if(m.door.amount<.50){m.concealed=true;return 0;}m.concealed=false;
@@ -80,6 +93,7 @@ function updateZombie(m,dt){
 }
 const ordinaryEnemyUpdate=updateEnemy;
 updateEnemy=function(m,dt){
+  if(m.type==='enema'&&!m.bossAwake){poseCreature(m.mesh,'idle',dt);if(roomAt(player.x,player.z)!==m.bossRoom&&!monsterCanSee(m))return 0;m.bossAwake=true;m.alert=12;m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];m.stareT=1.1;playSample('scaryImpact',()=>m.pos,.9,m);shakeAmt=Math.max(shakeAmt,.45);}
   if(isZombie(m)){const handled=updateZombie(m,dt);if(handled!==null)return handled;}
   if(m.type==='multi'&&m.ceilingState!=='ground'){
     const distance=Math.hypot(player.x-m.pos.x,player.z-m.pos.z);
@@ -92,7 +106,7 @@ updateEnemy=function(m,dt){
       poseCreature(m.mesh,'shriek',dt,1,m.dropTime);if(t>=1){m.ceilingState='ground';m.mesh.rotation.x=0;m.pos.y=0;m.alert=12;m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];m.atkCd=.45;rig.model.traverse(o=>{if(o.isMesh&&o.userData.ceilingShade){o.material.dispose();o.material=rig.asset.material;o.userData.ceilingShade=false;}});spatialStep(m,1.8);playSample('multiRoar',()=>m.pos,.9,m);shakeAmt=Math.max(shakeAmt,.65);}
     }return 0;
   }
-  if(m.type==='granny'&&!m.roamStarted){const d=Math.hypot(player.x-m.pos.x,player.z-m.pos.z);if(d<m.cfg.detect&&hasLOS(m.pos.x,m.pos.z,player.x,player.z)&&!closedDoorBetween(m.pos.x,m.pos.z,player.x,player.z)){m.roamStarted=true;m.roamTime=rnd(7,12);m.roamElapsed=0;}else{m.wait=Math.max(0,m.wait-dt);if(!m.patrol)m.patrol=selectPatrol(m);let moved=m.wait>0?0:followMonsterPath(m,m.patrol,m.cfg.walk,dt);if(m.patrol&&Math.hypot(m.pos.x-cellCX(m.patrol[0]),m.pos.z-cellCX(m.patrol[1]))<.24){m.patrol=null;m.path=null;m.wait=rnd(.4,1.7);}poseCreature(m.mesh,moved>.002?'walk':'idle',dt);return moved;}}
+  if(m.type==='granny'&&!m.roamStarted){if(monsterCanSee(m)||monsterCanHear(m)){m.roamStarted=true;m.roamTime=rnd(3,6);m.roamElapsed=0;}else{m.wait=Math.max(0,m.wait-dt);if(!m.patrol)m.patrol=selectPatrol(m);let moved=m.wait>0?0:followMonsterPath(m,m.patrol,m.cfg.walk,dt);if(m.patrol&&Math.hypot(m.pos.x-cellCX(m.patrol[0]),m.pos.z-cellCX(m.patrol[1]))<.24){m.patrol=null;m.path=null;m.wait=rnd(.4,1.7);}poseCreature(m.mesh,moved>.002?'walk':'idle',dt);return moved;}}
   return ordinaryEnemyUpdate(m,dt);
 };
 const oldResolveGranny=resolveGrannyRoam;resolveGrannyRoam=function(m,roll=Math.random()){const attacking=oldResolveGranny(m,roll);if(attacking)m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];return attacking;};
@@ -106,6 +120,6 @@ updateMonsters=function(dt){
   for(const l of lockers){l.amount=lerp(l.amount,l.target,Math.min(1,dt*7));l.hinge.rotation.y=l.amount*Math.PI*.54;}
   const r=roomAt(player.x,player.z);if(r&&r!==currentRoom){currentRoom=r;if(!visitedRooms.has(r.id)){visitedRooms.add(r.id);runStats.rooms++;if(!isSafeFloor()&&Math.random()<ENCOUNTER_RULES.gnomePerRoom)spawnGnome(r);}}
   if(isSafeFloor())return;
-  if(residentType==='granny'&&grannyReturnT>=0){grannyReturnT=Math.max(0,grannyReturnT-dt);if(grannyReturnT===0&&!monsters.some(m=>!m.dead&&isKey(m))){const candidates=rooms.filter(q=>q.kind!=='start'&&Math.hypot(cellCX(q.x)-player.x,cellCX(q.z)-player.z)>6);const q=pick(candidates);if(q){const m=placeResident('granny',q);if(m){m.roamStarted=true;m.roamTime=rnd(7,12);m.roamElapsed=0;grannyReturnT=-1;}}}}
+  if(residentType==='granny'&&grannyReturnT>=0){grannyReturnT=Math.max(0,grannyReturnT-dt);if(grannyReturnT===0&&!monsters.some(m=>!m.dead&&isKey(m))){const candidates=rooms.filter(q=>q.kind!=='start'&&Math.hypot(cellCX(q.x)-player.x,cellCX(q.z)-player.z)>6&&!monsters.some(m=>!m.dead&&roomAt(m.pos.x,m.pos.z)===q));const q=pick(candidates);if(q){const m=placeResident('granny',q);if(m){m.roamStarted=true;m.roamTime=rnd(3,6);m.roamElapsed=0;grannyReturnT=-1;}}}}
   threatWarning=threatLife=0;baseMonsterUpdate(dt);monsters=monsters.filter(m=>!m.dead);
 };

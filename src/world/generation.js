@@ -22,7 +22,8 @@ function generateSpecialMaze(type){
     const hall=add(15,21,1,14,'corridor');end=add(15,40,2,2,'room','exit');link(start,hall,true);link(hall,end,true);
     link(hall,add(8,21,2,2,'room','normal',true));link(hall,add(22,21,2,2,'room','normal',true));
   }else{
-    const desk=add(15,10,3,2,'hall');desk.reception=true;const rest=add(15,18,2,2,'room');end=add(15,26,2,2,'room','exit');link(start,desk);link(desk,rest);link(rest,end);link(desk,add(7,10,2,2,'room','normal',true));link(desk,add(23,10,2,2,'room','normal',true));
+    start.hx=2;
+    const desk=add(15,10,3,2,'hall');desk.reception=true;end=add(15,17,2,2,'room','exit');link(start,desk);link(desk,end);
   }
   for(const r of rooms)for(let x=r.x-r.hx;x<=r.x+r.hx;x++)for(let z=r.z-r.hz;z<=r.z+r.hz;z++)grid[gidx(x,z)]=0;
   for(const [a,b] of roomLinks){const dx=Math.sign(b.x-a.x),dz=Math.sign(b.z-a.z),length=Math.abs(b.x-a.x)+Math.abs(b.z-a.z);for(let n=0;n<=length;n++)grid[gidx(a.x+n*dx,a.z+n*dz)]=0;}
@@ -43,7 +44,7 @@ function distanceField(sx,sz){
 }
 
 function generateMaze(forced=null){
-  floorType=forced||rollFloorType();if(['hall','corridor','safe'].includes(floorType)){generateSpecialMaze(floorType);return;}
+  floorType=forced||(floor===1?'normal':rollFloorType());if(['hall','corridor','safe'].includes(floorType)){generateSpecialMaze(floorType);return;}
   grid.fill(1);
   // Compose connected modules on a coarse graph, then carve each room and passage.
   rooms=[];roomCells=[];roomLinks=[];floorPatterns=[];

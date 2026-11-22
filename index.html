@@ -42,8 +42,8 @@
   #floorbox small{display:none}
   #distancehud,#draft{display:none}
   .safe-floor #vignette{background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.35) 100%)}
-  .run-stats{display:grid;width:min(380px,85vw);gap:9px;text-align:left;margin:15px auto 25px;color:#c8d4ec;font-size:13px}
-  .run-stats div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #444a55}
+  .run-stats{display:grid;width:min(380px,85vw);gap:3px;text-align:left;margin:12px auto 18px;color:#c8d4ec;font-size:12px;max-height:58vh;overflow:auto}
+  .run-stats div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #444a55}
   .run-stats b{color:#fff}
 
   #cross{position:absolute;left:50%;top:50%;width:7px;height:7px;
@@ -106,7 +106,7 @@
     <div class="stat"><span class="lbl">ЖИЗНЬ</span><div class="track"><i id="hpbar"></i></div></div>
     <div class="stat"><span class="lbl">ВЫНОСЛИВОСТЬ</span><div class="track"><i id="stbar"></i></div></div>
   </div>
-  <div id="floorbox">ЭТАЖ 1 / 15<small>СПУСК</small></div>
+  <div id="floorbox">ЭТАЖ 1</div>
   <div id="distancehud">0 М<small>РЕКОРД 0 М</small></div>
   <div id="cross"></div>
   <div id="draft"><div class="dhead">СПУСК</div><div class="dtrack"><div id="dfill"></div></div></div>
@@ -3986,12 +3986,13 @@ const PIXEL_SCALE = 3;
 // All probabilities are evaluated once at their encounter/room boundary.
 const ENCOUNTER_RULES = Object.freeze({
   maximumRegulars: 4,
-  gnomePerRoom: .05,
+  gnomePerRoom: .15,
+  grannyAttackChance: .65,
   zombieDoor: .20,
   zombieLocker: .20,
   zombieWandering: .20,
-  multiCeilingRadius: 5.2,
-  multiGroundRadius: 17
+  multiCeilingRadius: 6.5,
+  multiGroundRadius: 19
 });
 
 const clamp = (v,a,b)=>v<a?a:v>b?b:v;
@@ -4197,7 +4198,8 @@ function generateSpecialMaze(type){
     const hall=add(15,21,1,14,'corridor');end=add(15,40,2,2,'room','exit');link(start,hall,true);link(hall,end,true);
     link(hall,add(8,21,2,2,'room','normal',true));link(hall,add(22,21,2,2,'room','normal',true));
   }else{
-    const desk=add(15,10,3,2,'hall');desk.reception=true;const rest=add(15,18,2,2,'room');end=add(15,26,2,2,'room','exit');link(start,desk);link(desk,rest);link(rest,end);link(desk,add(7,10,2,2,'room','normal',true));link(desk,add(23,10,2,2,'room','normal',true));
+    start.hx=2;
+    const desk=add(15,10,3,2,'hall');desk.reception=true;end=add(15,17,2,2,'room','exit');link(start,desk);link(desk,end);
   }
   for(const r of rooms)for(let x=r.x-r.hx;x<=r.x+r.hx;x++)for(let z=r.z-r.hz;z<=r.z+r.hz;z++)grid[gidx(x,z)]=0;
   for(const [a,b] of roomLinks){const dx=Math.sign(b.x-a.x),dz=Math.sign(b.z-a.z),length=Math.abs(b.x-a.x)+Math.abs(b.z-a.z);for(let n=0;n<=length;n++)grid[gidx(a.x+n*dx,a.z+n*dz)]=0;}
@@ -4218,7 +4220,7 @@ function distanceField(sx,sz){
 }
 
 function generateMaze(forced=null){
-  floorType=forced||rollFloorType();if(['hall','corridor','safe'].includes(floorType)){generateSpecialMaze(floorType);return;}
+  floorType=forced||(floor===1?'normal':rollFloorType());if(['hall','corridor','safe'].includes(floorType)){generateSpecialMaze(floorType);return;}
   grid.fill(1);
   // Compose connected modules on a coarse graph, then carve each room and passage.
   rooms=[];roomCells=[];roomLinks=[];floorPatterns=[];
@@ -4515,7 +4517,7 @@ function placeLamps(){
   }
   lamps = [];
 
-  const chosen=roomCells.filter((c,i)=>isSafeFloor()||i===0||Math.random()<.82);
+  const chosen=roomCells.filter((c,i)=>isSafeFloor()||i===0||rooms[i]?.kind==='exit'||Math.random()<(rooms[i]?.branch ? .47 : .72));
   if(floorType==='corridor'){for(let z=7;z<=35;z+=4)chosen.push([15,z]);}
   if(floorType==='hall'){for(const x of [11,19])for(const z of [12,18])chosen.push([x,z]);}
   for(const [a,b] of roomLinks)if(Math.random()<.35)chosen.push([(a.x+b.x)/2,(a.z+b.z)/2]);
@@ -5024,7 +5026,19 @@ function sampleTrack(keys,time){
   }
   return out;
 }
+function makeHallBoss(){
+  const root=new THREE.Group(),body=new THREE.Group();root.add(body);
+  const rubber=propMat(0x733a32),dark=propMat(0x302421),rim=propMat(0x986259),eye=propMat(0xc8ba91),pupil=propMat(0x1a1110);
+  const bulb=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),rubber);bulb.scale.set(.78,.96,.72);bulb.position.y=1.45;body.add(bulb);
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.13,.24,.53,8),rim);neck.position.y=2.55;body.add(neck);
+  const nozzle=new THREE.Mesh(new THREE.CylinderGeometry(.075,.12,.66,8),dark);nozzle.position.set(0,2.88,-.18);nozzle.rotation.x=-.4;body.add(nozzle);
+  for(const x of [-.23,.23]){const e=new THREE.Mesh(new THREE.SphereGeometry(.13,8,6),eye);e.position.set(x,1.78,-.66);body.add(e);propBox(body,pupil,x,1.78,-.77,.07,.09,.035);}
+  propBox(body,dark,0,1.37,-.71,.39,.12,.08);
+  const legs=[];for(const x of [-.41,.41]){const leg=new THREE.Group();leg.position.set(x,.82,0);root.add(leg);propBox(leg,dark,0,-.30,0,.15,.63,.19);propBox(leg,rubber,0,-.71,-.12,.34,.23,.55);legs.push(leg);}
+  root.userData.hallBoss={body,legs,time:0};return root;
+}
 function makeCreature(type){
+  if(type==='enema')return makeHallBoss();
   const asset=compileCreature(type),g=new THREE.Group(),model=new THREE.Group(),bones=[];
   g.add(model);model.scale.setScalar(asset.scale);
   asset.nodes.forEach((d,i)=>{
@@ -5036,9 +5050,10 @@ function makeCreature(type){
   g.userData.rig={type,asset,bones,model,head:bones[asset.head],state:null,time:0,blendT:.2,from:null};
   poseCreature(g,'idle',0,1,0);return g;
 }
-function disposeRig(g){g.traverse(o=>{if(o.isMesh&&o.userData.ceilingShade)o.material.dispose();});g.clear();} // Creature geometry and permanent materials are shared.
+function disposeRig(g){if(g.userData.hallBoss){disposeTree(g);return;}g.traverse(o=>{if(o.isMesh&&o.userData.ceilingShade)o.material.dispose();});g.clear();} // Creature geometry and permanent materials are shared.
 const poseEuler=new THREE.Euler(0,0,0,'ZYX'),poseQ=new THREE.Quaternion(),poseP=new THREE.Vector3();
 function poseCreature(g,state,dt=0,rate=1,forceTime=null){
+  if(g.userData.hallBoss){const b=g.userData.hallBoss;b.time+=dt*rate;const t=forceTime??b.time,walking=state==='walk'||state==='run',attack=state==='attack';b.body.position.y=walking?Math.abs(Math.sin(t*9))*.12:attack?Math.sin(Math.min(1,t/1.5)*Math.PI)*.35:Math.sin(t*2)*.025;b.body.scale.y=attack?1-.17*Math.sin(Math.min(1,t/1.5)*Math.PI):1;b.body.rotation.x=attack?-.26*Math.sin(Math.min(1,t/1.5)*Math.PI):0;b.legs.forEach((leg,i)=>leg.rotation.x=walking?Math.sin(t*9+i*Math.PI)*.42:attack?-.12:0);return;}
   const r=g.userData.rig;if(!r)return;
   const clip=r.asset.clips[BB_CLIPS[r.type][state]];
   if(!clip)return;
@@ -5110,16 +5125,18 @@ function creatureVoice(m,kind='growl'){
 
 /* ---------- ровно два существа на каждом этаже ---------- */
 const ENEMY_CONFIG={
-  granny:{hp:3,run:4.3,walk:1.48,range:1.60,impact:.22,duration:.75,damage:16,recover:.60,hit:.35,step:.75,detect:11,hear:2.8},
-  buried:{hp:4,run:3.8,walk:1.30,range:1.77,impact:.59,duration:1.30,damage:21,recover:.82,hit:.65,step:.92,detect:8,hear:3.6},
+  granny:{hp:3,run:4.3,walk:1.48,range:1.60,impact:.22,duration:.75,damage:16,recover:.60,hit:.35,step:.75,detect:16,hear:6},
+  buried:{hp:4,run:3.8,walk:1.30,range:1.77,impact:.59,duration:1.30,damage:21,recover:.82,hit:.65,step:.92,detect:12,hear:5},
   multi:{hp:5,run:4.35,walk:1.8,range:2.05,impact:.46,duration:1.12,damage:23,recover:.85,hit:.45,step:.53,detect:ENCOUNTER_RULES.multiGroundRadius,hear:5.5},
-  patient:{hp:2,run:3.6,walk:1.35,range:1.55,impact:.42,duration:1.02,damage:12,recover:.82,hit:.45,step:.65,detect:9,hear:3.2},
-  orderly:{hp:3,run:3.1,walk:1.06,range:1.75,impact:.62,duration:1.28,damage:18,recover:1.0,hit:.55,step:.87,detect:10,hear:3.8},
+  patient:{hp:2,run:3.6,walk:1.35,range:1.55,impact:.42,duration:1.02,damage:12,recover:.82,hit:.45,step:.65,detect:11,hear:5},
+  orderly:{hp:3,run:3.1,walk:1.06,range:1.75,impact:.62,duration:1.28,damage:18,recover:1.0,hit:.55,step:.87,detect:13,hear:6},
+  enema:{hp:9,run:2.65,walk:1.30,range:2.05,impact:.78,duration:1.50,damage:22,recover:1.45,hit:.42,step:.95,detect:20,hear:8},
   gnome:{hp:1,run:5.3,walk:1.65,range:0,impact:0,duration:0,damage:0,recover:0,hit:0,step:.48}
 };
 function makeMonster(type,pos){
   if(!pos)return null;
-  const mesh=makeCreature(type),base=ENEMY_CONFIG[type],d=Math.max(0,floor-1),cfg=type==='gnome'?{...base,run:Math.min(6.2,base.run+d*.06)}:{...base,hp:base.hp+2+Math.min(4,Math.floor(d/3)),run:Math.min(4.85,base.run+d*.07),walk:Math.min(1.9,base.walk+d*.035),damage:Math.min(48,Math.round(base.damage*1.35+d*1.55)),recover:Math.max(.34,base.recover-d*.035)};
+  const mesh=makeCreature(type),base=ENEMY_CONFIG[type],d=Math.max(0,floor-1);
+  const cfg=type==='gnome'?{...base,run:Math.min(6.2,base.run+d*.06)}:{...base,hp:base.hp+2+Math.floor(d/2),run:Math.min(4.85,base.run+d*.045),walk:Math.min(1.95,base.walk+d*.025),detect:Math.min(28,base.detect+d*.12),hear:Math.min(10,base.hear+d*.08),damage:Math.min(75,Math.round(base.damage*1.35+d*.72)),recover:Math.max(.40,base.recover-d*.014)};
   mesh.position.copy(pos);monsterGroup.add(mesh);
   return {type,cfg,mesh,pos:pos.clone(),angle:Math.random()*Math.PI*2,hp:cfg.hp,dead:false,
     path:null,pathGoal:-1,pathTimer:0,patrol:null,wait:rnd(.2,1.1),alert:0,chasing:false,atkCd:0,
@@ -5173,6 +5190,13 @@ function turnMonster(m,tx,tz,dt){
   const delta=Math.atan2(Math.sin(wanted-m.angle),Math.cos(wanted-m.angle));
   m.angle+=delta*Math.min(1,dt*12);m.mesh.rotation.y=m.angle;
 }
+function monsterCanHear(m){
+  const speed=Math.hypot(player.vx,player.vz);if(speed<1.1)return false;
+  const d=Math.hypot(player.x-m.pos.x,player.z-m.pos.z),radius=m.cfg.hear*(speed>4?1.3:1);
+  if(d>radius||!hasLOS(m.pos.x,m.pos.z,player.x,player.z))return false;
+  return !closedDoorBetween(m.pos.x,m.pos.z,player.x,player.z)||d<radius*.45;
+}
+function monsterCanSee(m){return Math.hypot(player.x-m.pos.x,player.z-m.pos.z)<m.cfg.detect&&hasLOS(m.pos.x,m.pos.z,player.x,player.z)&&!closedDoorBetween(m.pos.x,m.pos.z,player.x,player.z);}
 function moveMonster(m,tx,tz,speed,dt,stop=0){
   const dx=tx-m.pos.x,dz=tz-m.pos.z,d=Math.hypot(dx,dz);if(d<=stop+.018)return 0;
   const k=Math.min(speed*dt,d-stop)/d,ox=m.pos.x,oz=m.pos.z;
@@ -5186,8 +5210,8 @@ function moveMonster(m,tx,tz,speed,dt,stop=0){
   for(const other of monsters){
     if(other===m||other.dead||other.concealed||other.ceilingState&&other.ceilingState!=='ground'||m.type==='gnome'||other.type==='gnome')continue;
     const x=m.pos.x-other.pos.x,z=m.pos.z-other.pos.z,dd=Math.hypot(x,z);
-    if(dd>0.001&&dd<.64){
-      const overlap=Math.min(.07,(.64-dd)*.35),rx=m.pos.x+x/dd*overlap,rz=m.pos.z+z/dd*overlap;
+    if(dd<1.02){
+      const overlap=Math.min(.12,(1.02-dd)*.38),rx=m.pos.x+(dd>.001?x/dd:Math.sin(m.angle))*overlap,rz=m.pos.z+(dd>.001?z/dd:Math.cos(m.angle))*overlap;
       if(!circleHits(rx,rz,r)&&Math.hypot(rx-player.x,rz-player.z)>.78){m.pos.x=rx;m.pos.z=rz;}
     }
   }
@@ -5196,7 +5220,7 @@ function moveMonster(m,tx,tz,speed,dt,stop=0){
 }
 function selectPatrol(m){
   const list=rooms.filter(r=>Math.hypot(m.pos.x-cellCX(r.x),m.pos.z-cellCX(r.z))>3);
-  if(!list.length)return null;const a=list[Math.random()*list.length|0];return [a.x,a.z];
+  if(!list.length)return null;const free=list.filter(r=>!monsters.some(n=>n!==m&&!n.dead&&n.type!=='gnome'&&(roomAt(n.pos.x,n.pos.z)===r||n.patrol?.[0]===r.x&&n.patrol?.[1]===r.z)));const pool=free.length?free:list,a=pool[Math.random()*pool.length|0];return [a.x,a.z];
 }
 function followMonsterPath(m,goal,speed,dt){
   if(!goal)return 0;
@@ -5216,8 +5240,8 @@ function followMonsterPath(m,goal,speed,dt){
 function removeMonsterQuietly(m){if(m.dead)return;m.dead=true;m.mesh.visible=false;stopSamples(null,m);monsterGroup.remove(m.mesh);disposeRig(m.mesh);}
 function resolveGrannyRoam(m,roll=Math.random()){
   m.roamTime=0;stopSamples('laugh',m);
-  // Each laughing visit has its own independent 80/20 outcome.
-  if(roll<.8){removeMonsterQuietly(m);grannyReturnT=rnd(22,42);threatLife=0;threatCooldown=Math.max(8,grannyReturnT);return false;}
+  // A close encounter commits to pursuit, otherwise the scare can end in retreat.
+  if(roll>=ENCOUNTER_RULES.grannyAttackChance){removeMonsterQuietly(m);grannyReturnT=rnd(10,18);threatLife=0;threatCooldown=Math.max(8,grannyReturnT);return false;}
   m.alert=32;m.path=null;m.pathTimer=0;m.chasing=false;m.wait=0;grannyReturnT=-1;playSample('scream',()=>m.pos,.57,m);showMsg('ОНА БЕЖИТ ЗА ВАМИ',2,true);return true;
 }
 function updateGnome(m,dt){
@@ -5236,6 +5260,13 @@ function mummyFlank(m,dt){
   const g=m.flankGoal;if(!g)return 0;
   const moved=hasLOS(m.pos.x,m.pos.z,g.x,g.z)?moveMonster(m,g.x,g.z,m.cfg.walk*1.6,dt,.12):followMonsterPath(m,[g.i,g.j],m.cfg.walk*1.6,dt);poseCreature(m.mesh,moved>.002?'walk':'idle',dt,1.1);return moved;
 }
+let pressureLeader=null;
+function waitForEncounterTurn(m,dt,dist){
+  m.supportT=(m.supportT||0)-dt;let moved=0;
+  if(dist<7){if(m.supportT<=0||!m.supportGoal){m.supportT=1.6;const candidates=rooms.filter(r=>Math.hypot(cellCX(r.x)-player.x,cellCX(r.z)-player.z)>8&&!monsters.some(n=>n!==m&&!n.dead&&n.type!=='gnome'&&roomAt(n.pos.x,n.pos.z)===r));const target=candidates.sort((a,b)=>Math.hypot(cellCX(a.x)-m.pos.x,cellCX(a.z)-m.pos.z)-Math.hypot(cellCX(b.x)-m.pos.x,cellCX(b.z)-m.pos.z))[0];m.supportGoal=target?[target.x,target.z]:null;m.path=null;}
+    if(m.supportGoal)moved=followMonsterPath(m,m.supportGoal,m.cfg.walk,dt);else if(dist<4){const d=Math.max(.01,dist);moved=moveMonster(m,m.pos.x+(m.pos.x-player.x)/d*3,m.pos.z+(m.pos.z-player.z)/d*3,m.cfg.walk,dt);}}
+  if(moved<.002)turnMonster(m,player.x,player.z,dt);poseCreature(m.mesh,moved>.002?'walk':'idle',dt,.75);return moved;
+}
 function updateEnemy(m,dt){
   if(m.type==='gnome')return updateGnome(m,dt);
   const cfg=m.cfg,dx=player.x-m.pos.x,dz=player.z-m.pos.z,dist=Math.hypot(dx,dz);
@@ -5243,8 +5274,9 @@ function updateEnemy(m,dt){
   if(m.type==='granny'&&m.roamTime>0){
     m.roamTime-=dt;m.roamElapsed=(m.roamElapsed||0)+dt;
     if(!m.laughStarted){m.laughStarted=true;playSample('laugh',()=>m.pos,2.25,m);}
-    if(m.roamTime<=0||(m.roamElapsed>5.5&&seen&&dist<7.5)){
-      if(!resolveGrannyRoam(m))return 0;
+    const close=seen&&dist<2.8&&m.roamElapsed>.6;
+    if(close||m.roamTime<=0||(m.roamElapsed>2.5&&seen&&dist<7.5)){
+      if(!resolveGrannyRoam(m,close?0:Math.random()))return 0;
     }else{
       m.alert=0;m.chasing=false;m.attackT=0;
       if(!m.patrol){const near=rooms.filter(r=>Math.hypot(cellCX(r.x)-m.pos.x,cellCX(r.z)-m.pos.z)>4).sort((a,b)=>Math.hypot(cellCX(a.x)-player.x,cellCX(a.z)-player.z)-Math.hypot(cellCX(b.x)-player.x,cellCX(b.z)-player.z));if(near.length){const r=near[Math.random()*Math.min(3,near.length)|0];m.patrol=[r.x,r.z];}}
@@ -5254,10 +5286,10 @@ function updateEnemy(m,dt){
     }
   }
   const was=m.chasing;
-  if(seen||(openLine&&dist<cfg.hear)){m.alert=Math.max(m.alert,7);m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];}
+  if(seen||monsterCanHear(m)||(openLine&&dist<2.4)){m.alert=Math.max(m.alert,7);m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];}
   else m.alert=Math.max(0,m.alert-dt);
   m.chasing=m.alert>0;
-  if(m.chasing&&!was){creatureVoice(m,m.type==='granny'?'cry':'growl');m.path=null;m.pathTimer=0;m.growlT=rnd(2,3.5);}
+  if(m.chasing&&!was){creatureVoice(m,m.type==='granny'?'cry':'growl');m.path=null;m.pathTimer=0;m.growlT=rnd(2,3.5);if(m.type!=='granny'&&m.type!=='enema'&&dist>3)m.stareT=rnd(.7,1.5);}
   m.growlT-=dt;
   if(m.growlT<=0){m.growlT=m.chasing?rnd(2.3,4.5):rnd(7,14);if(dist<22)creatureVoice(m,m.type==='granny'?(m.chasing?'cry':'whisper'):'growl');}
   m.atkCd=Math.max(0,m.atkCd-dt);
@@ -5272,6 +5304,8 @@ function updateEnemy(m,dt){
     if(m.attackT>=cfg.duration){m.attackT=0;m.atkCd=cfg.recover;m.path=null;m.pathTimer=0;}
     return 0;
   }
+  if(m.chasing&&dist<14){if(!pressureLeader||pressureLeader.dead)pressureLeader=m;if(pressureLeader!==m)return waitForEncounterTurn(m,dt,dist);}
+  if(m.stareT>0){m.stareT=Math.max(0,m.stareT-dt);turnMonster(m,player.x,player.z,dt);poseCreature(m.mesh,'idle',dt,.65);return 0;}
   if(m.type==='buried'&&m.chasing&&seen&&!mummyRearSector(m)){
     m.frontWait=(m.frontWait||0)+dt;
     if(m.frontWait<3.5||dist>cfg.range){const moved=mummyFlank(m,dt);if(m.flankGoal)return moved;}
@@ -5309,6 +5343,9 @@ function updateEnemy(m,dt){
   return moved;
 }
 function updateMonsters(dt){
+  const active=monsters.filter(m=>!m.dead&&!m.concealed&&m.type!=='gnome'&&(!m.ceilingState||m.ceilingState==='ground')&&(m.roamTime||0)<=0&&(m.chasing||m.alert>0||m.attackT>0)&&Math.hypot(m.pos.x-player.x,m.pos.z-player.z)<14);
+  const attacking=active.find(m=>m.attackT>0);
+  pressureLeader=attacking||(active.includes(pressureLeader)?pressureLeader:active.sort((a,b)=>Math.hypot(a.pos.x-player.x,a.pos.z-player.z)-Math.hypot(b.pos.x-player.x,b.pos.z-player.z))[0]||null);
   for(const m of monsters){
     if(gameState!=='playing'||scareTime>0)break;
     if(m.dead)continue;
@@ -5521,7 +5558,8 @@ function updateLights(dt){
    ФЛОУ ИГРЫ
    ========================================================== */
 let runStats={time:0,walked:0,rooms:0,kills:0,hits:0,damage:0,cleared:0,safe:0};
-function runSummary(){const t=Math.floor(runStats.time),clock=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');const rows=[['Пройдено этажей',runStats.cleared+' / 15'],['Время забега',clock],['Пройдено метров',Math.floor(runStats.walked)+' м'],['Посещено комнат',runStats.rooms],['Побеждено монстров',runStats.kills],['Попаданий топором',runStats.hits],['Получено урона',Math.round(runStats.damage)],['Безопасных этажей',runStats.safe],['Рекорд спуска',bestDistance+' м']];return '<div class="run-stats">'+rows.map(([k,v])=>'<div><span>'+k+'</span><b>'+v+'</b></div>').join('')+'</div>';}
+let bestFloor=1;try{const n=Number(localStorage.getItem('palata13.bestFloor'));if(Number.isSafeInteger(n)&&n>0)bestFloor=n;}catch{}
+function runSummary(){const t=Math.floor(runStats.time),clock=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');const rows=[['Пройдено этажей',runStats.cleared],['Достигнут этаж',floor],['Рекорд этажа',bestFloor],['Время забега',clock],['Пройдено метров',Math.floor(runStats.walked)+' м'],['Посещено комнат',runStats.rooms],['Побеждено монстров',runStats.kills],['Попаданий топором',runStats.hits],['Получено урона',Math.round(runStats.damage)],['Безопасных этажей',runStats.safe],['Рекорд спуска',bestDistance+' м']];return '<div class="run-stats">'+rows.map(([k,v])=>'<div><span>'+k+'</span><b>'+v+'</b></div>').join('')+'</div>';}
 function descend(){
   if (descending || gameState!=='playing') return;
   descending = true;
@@ -5538,8 +5576,8 @@ function finishDescend(){
     if(gameState!=='playing'||!descending)return;
     stopSamples();distantTimer=rnd(32,60);
     runStats.cleared++;runCompleted+=Math.max(0,routeDist[gidx(...startCell)])*BLOCK;floorProgress=0;saveDistanceRecord(runCompleted);
-    if(floor===15){gameState='won';descending=false;fadeEl.style.opacity='0';for(const k in keys)keys[k]=false;document.exitPointerLock();stopSamples();showOverlay('ВЫ ВЫБРАЛИСЬ',runSummary(),'ИГРАТЬ СНОВА','green');return;}
     floor++;
+    if(floor>bestFloor){bestFloor=floor;try{localStorage.setItem('palata13.bestFloor',String(bestFloor));}catch{}}
     // Regenerate everything
     generateMaze();
     if(isSafeFloor())runStats.safe++;
@@ -5831,7 +5869,7 @@ function loop(now){
   update(dt);
   if(scareTime>0&&scareMesh){
     const t=clamp(1-scareTime/scareDuration,0,1),r=scareMesh.userData.rig;
-    if(!r){scareMesh.rotation.set(.12+Math.sin(t*25)*.08,Math.PI+Math.sin(t*24)*.09,Math.sin(t*18)*.07);scareCamera.position.set(0,.91,lerp(-2.4,-.66,Math.min(1,t*4)));scareCamera.lookAt(0,.82,0);renderer.autoClear=true;renderer.render(scareScene,scareCamera);requestAnimationFrame(loop);return;}
+    if(!r){const boss=!!scareMesh.userData.hallBoss;if(boss)poseCreature(scareMesh,'attack',dt,1,t*1.5);scareMesh.rotation.set(.12+Math.sin(t*25)*.08,boss?0:Math.PI+Math.sin(t*24)*.09,Math.sin(t*18)*.07);const aim=boss?1.70:.82;scareCamera.position.set(0,aim+.09,lerp(boss?-3.6:-2.4,boss?-1.2:-.66,Math.min(1,t*4)));scareCamera.lookAt(0,aim,0);renderer.autoClear=true;renderer.render(scareScene,scareCamera);requestAnimationFrame(loop);return;}
     const clip=r.asset.clips[BB_CLIPS[r.type].scare];poseCreature(scareMesh,'scare',dt,1,t*clip.length);
     scareMesh.updateMatrixWorld(true);
     const head=r.head?r.head.getWorldPosition(new THREE.Vector3()):new THREE.Vector3(0,1.65,0);head.y+=.14;
@@ -5892,6 +5930,7 @@ function safeFurniturePlacement(r,g,wanted,offset){
   for(const [a,b] of roomLinks){if(a!==r&&b!==r)continue;const q=a===r?b:a,tx=q.x>r.x?cx+hx:q.x<r.x?cx-hx:cx,tz=q.z>r.z?cz+hz:q.z<r.z?cz-hz:cz;
     reserved.push({min:{x:Math.min(cx,tx)-.72,z:Math.min(cz,tz)-.72},max:{x:Math.max(cx,tx)+.72,z:Math.max(cz,tz)+.72}});}
   if(r.kind==='exit'&&exitDoor){const x=exitDoor.x,z=exitDoor.z;reserved.push({min:{x:Math.min(cx,x)-1.15,z:Math.min(cz,z)-1.15},max:{x:Math.max(cx,x)+1.15,z:Math.max(cz,z)+1.15}});}
+  for(const l of lockers.filter(l=>l.room===r)){const p=lockerFront(l);reserved.push({min:{x:p.x-.45,z:p.z-.45},max:{x:p.x+.45,z:p.z+.45}});}
   let best=null;const sides=[wanted,...['E','W','S','N'].filter(s=>s!==wanted)];
   function overlap(a,b,gap=0){return Math.max(0,Math.min(a.max.x+gap,b.max.x)-Math.max(a.min.x-gap,b.min.x))*Math.max(0,Math.min(a.max.z+gap,b.max.z)-Math.max(a.min.z-gap,b.min.z));}
   for(const s of sides)for(const o of [offset,-offset,0,.45,-.45]){const b=snapRoomWall(r,g,s,o);const conflict=reserved.some(q=>overlap(b,q,.05)>0)||furnitureColliders.some(q=>overlap(b,q,.12)>0)||!clearBoxInRoom(b);if(!conflict){best={s,o};break;}}
@@ -5923,9 +5962,20 @@ function hospitalFurniture(r,idx){
   }
 }
 function boxLocker(g,s,d){for(const x of [-.40,.40])propBox(g,s,x,1.13,0,.065,2.26,.62);propBox(g,s,0,2.23,0,.86,.065,.62);propBox(g,s,0,.04,0,.86,.08,.62);propBox(g,d,0,1.13,.29,.75,2.16,.05);const h=new THREE.Group();h.position.set(-.37,0,-.32);g.add(h);propBox(h,d,.37,1.13,0,.73,2.12,.055);for(let i=0;i<4;i++)propBox(h,s,.37,1.68+i*.06,-.035,.42,.024,.025);propBox(h,s,.62,1.05,-.05,.07,.22,.07);return h;}
+function extraRoomFurniture(r,kind,offset){
+  const g=new THREE.Group(),steel=propMat(isSafeFloor()?0x999d97:0x555b59),fabric=propMat(isSafeFloor()?0x85504a:0x394743),wood=propMat(isSafeFloor()?0xb6a08c:0x53483c),dark=propMat(0x353630),white=propMat(0xb5b6ad);const box=(m,x,y,z,w,h,d)=>propBox(g,m,x,y,z,w,h,d);
+  if(kind===0){box(fabric,0,.51,0,1.55,.22,.59);box(fabric,0,.90,.25,1.55,.67,.14);for(const x of [-.66,.66])box(steel,x,.26,0,.10,.52,.48);}
+  else if(kind===1){for(const x of [-.44,.44])box(wood,x,.85,0,.08,1.7,.48);for(const y of [.15,.77,1.43])box(wood,0,y,0,.95,.09,.48);for(let i=0;i<4;i++)box(white,-.32+i*.20,.91,0,.13,.19,.32);}
+  else if(kind===2){box(dark,0,.23,0,.42,.46,.42);if(isSafeFloor()){box(wood,0,.44,0,.34,.08,.34);for(let i=0;i<5;i++){const leaf=box(propMat(0x53694b),Math.sin(i*1.9)*.15,.68+i*.10,Math.cos(i*1.9)*.13,.23,.35,.18);leaf.rotation.z=(i%2?1:-1)*.45;}}else box(steel,0,.45,0,.46,.065,.46);}
+  else if(kind===3){box(steel,0,.15,0,1.25,.09,.39);for(const x of [-.57,.57])box(steel,x,1.03,0,.065,2.06,.065);box(fabric,0,1.14,0,1.12,1.68,.06);}
+  else if(kind===4){box(wood,0,.66,0,.66,.12,.58);for(const x of [-.25,.25])for(const z of [-.22,.22])box(steel,x,.32,z,.065,.64,.065);box(white,0,.79,0,.28,.18,.35);}
+  else{box(steel,0,.51,0,.77,1.02,.49);box(white,0,1.04,0,.84,.14,.61);box(dark,0,.55,-.26,.53,.78,.035);box(steel,.18,.65,-.29,.12,.06,.035);}
+  return putDecoration(r,g,offset);
+}
 function buildHospital(){
   disposeTree(hospitalGroup);for(const t of hospitalTextures)t.dispose();hospitalTextures=[];doors=[];lockers=[];hospitalChairs=[];furnitureColliders=[];hidden=null;axePivot.visible=true;visitedRooms=new Set();currentRoom=null;threatWarning=0;threatLife=0;threatCooldown=Math.max(8,16-(floor-1)*1.3);threatCount=0;interactHeld=false;
   receptionist=null;vendingMachines=[];const w=ward();if(isSafeFloor())buildSafeDecor();else rooms.forEach((r,i)=>{r.label=r.kind==='start'?w.name:r.kind==='exit'?'ВЫХОД':r.falseExit?'ВЫХОД':r.secret?'Подсобная':r.layout==='corridor'?'Коридор':r.layout==='hall'?'Зал':r.layout==='nested'?'Блок кабинетов':w.labels[(i-1+w.labels.length)%w.labels.length];r.number=r.branch?String(floor).padStart(2,'0')+'-'+String(r.parentSequence).padStart(2,'0')+'Б'+r.branchNumber:String(floor).padStart(2,'0')+'-'+String(r.sequence).padStart(2,'0');hospitalFurniture(r,i);});
+  rooms.forEach((r,i)=>{if(r.layout==='nested'||r.layout==='narrow')return;const count=isSafeFloor()?5:r.layout==='hall'?5:3;for(let n=0;n<count;n++){const kind=isSafeFloor()?[0,1,2,4,5][(i+n)%5]:(i+n*2)%6;extraRoomFurniture(r,kind,n%2?-.45:.45);}});
   for(let i=0;i<roomLinks.length;i++){
     const [a,b,open]=roomLinks[i];if(open)continue;const x=cellCX((a.x+b.x)/2),z=cellCX((a.z+b.z)/2),axis=a.x!==b.x?'x':'z';
     const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=Math.atan2(b.x-a.x,b.z-a.z);hospitalGroup.add(g);
@@ -6002,7 +6052,7 @@ function addVending(r,i){
   propBox(g,metal,0,.37,-.36,.65,.27,.07);propBox(g,white,.35,1.39,-.38,.09,.3,.04);propBox(g,white,.35,1.07,-.38,.07,.07,.035);
   if(putDecoration(r,g,1)){const a=g.rotation.y;vendingMachines.push({x:g.position.x-Math.sin(a)*.85,z:g.position.z-Math.cos(a)*.85,group:g,used:false});}
 }
-function buildSafeDecor(){receptionist=null;vendingMachines=[];const r=rooms.find(q=>q.reception);if(r)buildReception(r);for(let i=0;i<rooms.length;i++){const q=rooms[i];if(q.kind!=='exit'){addPainting(q,i);if(!q.reception)addVending(q,i);}}}
+function buildSafeDecor(){receptionist=null;vendingMachines=[];const r=rooms.find(q=>q.reception);if(r)buildReception(r);for(let i=0;i<rooms.length;i++){const q=rooms[i];addPainting(q,i);if(!q.reception)addVending(q,i);}}
 function updateReception(dt){if(!receptionist)return;const r=receptionist;r.t+=dt;const p=r.root.getWorldPosition(new THREE.Vector3()),local=r.group.worldToLocal(new THREE.Vector3(player.x,EYE,player.z));const wanted=clamp(Math.atan2(-local.x,-(local.z-r.root.position.z)),-1.3,1.3);r.headYaw=lerp(r.headYaw,wanted,Math.min(1,dt*3.5));r.head.quaternion.copy(r.rest).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0,1,0),r.headYaw));if(!r.spoken&&audioBuffers.has('receptionVoice')&&Math.hypot(p.x-player.x,p.z-player.z)<9&&hasLOS(p.x,p.z,player.x,player.z)&&!closedDoorBetween(p.x,p.z,player.x,player.z)){if(playSample('receptionVoice',{x:p.x,z:p.z},.95))r.spoken=true;}}
 
 
@@ -6120,7 +6170,7 @@ const axeAsset=new THREE.Mesh(buildBoneGeometry(importedAxe.elements,[0,0,0],imp
 axeAsset.scale.setScalar(.035);axeAsset.position.y=-.17;axe.add(axeAsset);
 
 let residentType=null,eventCabinets=[],hospitalChairs=[];
-const isKey=m=>m.type==='granny'||m.type==='multi';
+const isKey=m=>m.type==='granny'||m.type==='multi'||m.type==='enema';
 const isZombie=m=>m.type==='patient'||m.type==='orderly';
 const pick=items=>items.length?items[Math.random()*items.length|0]:null;
 function placeResident(type,r){
@@ -6133,18 +6183,27 @@ function placeResident(type,r){
 function lockerFront(l){const angle=l.group.rotation.y;return {x:l.x-Math.sin(angle)*.95,z:l.z-Math.cos(angle)*.95};}
 function freeLocker(l){const p=lockerFront(l);return !l.occupied&&l.room.kind!=='start'&&!circleHits(p.x,p.z,.28)&&!furnitureHit(p.x,p.z);}
 function zombieMode(roll=Math.random()){const r=ENCOUNTER_RULES;return roll<r.zombieDoor?'door':roll<r.zombieDoor+r.zombieLocker?'locker':roll<r.zombieDoor+r.zombieLocker+r.zombieWandering?'wander':'buried';}
+function cornerSpot(r){
+  const spots=[];for(const a of [-1,1])for(const b of [-1,1])for(const inset of [.25,.70,1.1]){const x=cellCX(r.x)+a*((r.hx+.5)*BLOCK-inset-.32),z=cellCX(r.z)+b*((r.hz+.5)*BLOCK-inset-.32);if(!circleHits(x,z,.35)&&!furnitureHit(x,z)&&!monsters.some(m=>!m.dead&&Math.hypot(m.pos.x-x,m.pos.z-z)<2))spots.push(new THREE.Vector3(x,0,z));}
+  return spots.sort((a,b)=>Math.min(...lamps.map(l=>Math.hypot(l.pos.x-b.x,l.pos.z-b.z)))-Math.min(...lamps.map(l=>Math.hypot(l.pos.x-a.x,l.pos.z-a.z))))[0]||null;
+}
 function spawnRegular(mode,usedRooms=new Set()){
-  const pool=rooms.filter(r=>r.kind==='normal'&&!usedRooms.has(r)),r=pick(pool)||pick(rooms.filter(q=>q.kind==='normal'));if(!r)return null;
+  const pool=rooms.filter(r=>r.kind==='normal'&&!usedRooms.has(r));let r=pick(pool);if(!r)return null;
   const type=mode==='buried'?'buried':Math.random()<.55?'patient':'orderly';let pos=new THREE.Vector3(cellCX(r.x),0,cellCX(r.z)),d=null,l=null;
-  if(mode==='door'){d=pick(doors.filter(q=>!q.zombie&&q.a.kind!=='start'&&q.b.kind!=='start'))||pick(doors.filter(q=>!q.zombie));if(d){const dx=Math.sign(d.b.x-d.a.x),dz=Math.sign(d.b.z-d.a.z);pos.set(d.x+dx*1.5,0,d.z+dz*1.5);}else mode='wander';}
-  if(mode==='locker'){l=pick(lockers.filter(freeLocker));if(l){pos.set(l.x,0,l.z);l.occupied=true;}else mode='wander';}
-  const m=makeMonster(type,pos);m.mode=mode==='door'?'door-wait':mode==='locker'?'locker-wait':'wander';m.concealed=!!(d||l);m.mesh.visible=!m.concealed;m.door=d;m.locker=l;m.role='regular';m.patrol=null;if(d)d.zombie=m;monsters.push(m);usedRooms.add(r);return m;
+  if(mode==='door'){d=pick(doors.filter(q=>!q.zombie&&pool.includes(q.b)&&q.a.kind!=='start'))||pick(doors.filter(q=>!q.zombie&&pool.includes(q.b)));if(d){r=d.b;const dx=Math.sign(d.b.x-d.a.x),dz=Math.sign(d.b.z-d.a.z);pos.set(d.x+dx*1.5,0,d.z+dz*1.5);}else mode='wander';}
+  if(mode==='locker'){l=pick(lockers.filter(q=>freeLocker(q)&&pool.includes(q.room)));if(l){r=l.room;pos.set(l.x,0,l.z);l.occupied=true;}else mode='wander';}
+  if(mode==='wander'&&type!=='buried'&&Math.random()<.65){const corner=cornerSpot(r);if(corner){pos.copy(corner);mode='corner';}}
+  const m=makeMonster(type,pos);m.mode=mode==='door'?'door-wait':mode==='locker'?'locker-wait':mode==='corner'?'corner-wait':'wander';m.concealed=!!(d||l);m.mesh.visible=!m.concealed;m.door=d;m.locker=l;m.role='regular';m.homeRoom=r;m.patrol=null;if(d)d.zombie=m;if(mode==='corner')m.mesh.userData.rig.model.scale.y=m.mesh.userData.rig.asset.scale*.68;monsters.push(m);usedRooms.add(r);return m;
 }
 function spawnFloorMonsters(){
   if(isSafeFloor()){residentType=null;return;}
+  if(floorType==='hall'){
+    const hall=rooms.find(r=>r.layout==='hall');residentType='enema';const boss=placeResident('enema',hall);boss.bossRoom=hall;boss.bossAwake=false;boss.homeRoom=hall;
+    const used=new Set([hall]);for(let i=0;i<Math.min(2,1+Math.floor(floor/10));i++)spawnRegular('wander',used);return;
+  }
   residentType=floor===1?'granny':floor===2?'multi':Math.random()<.5?'granny':'multi';
   const main=rooms.filter(r=>!r.branch&&r.kind==='normal'),mid=main.slice(Math.max(0,Math.floor(main.length*.32)),Math.max(1,Math.ceil(main.length*.8))),r=mid[Math.random()*mid.length|0]||main[0]||rooms[1];
-  placeResident(residentType,r);const used=new Set([r]),count=Math.floor(Math.random()*(ENCOUNTER_RULES.maximumRegulars+1));for(let i=0;i<count;i++)spawnRegular(zombieMode(),used);
+  const resident=placeResident(residentType,r);if(resident)resident.homeRoom=r;const used=new Set([r]),count=Math.min(ENCOUNTER_RULES.maximumRegulars,Math.floor(Math.random()*(ENCOUNTER_RULES.maximumRegulars+1))+Math.floor((floor-1)/12));for(let i=0;i<count;i++)spawnRegular(zombieMode(),used);
 }
 function onPlayerOpenDoor(d){
   d.autoBlock=0;const m=d.zombie;if(!m||m.dead||m.mode!=='door-wait')return;
@@ -6162,6 +6221,10 @@ function zombieCharge(m){
   m.concealed=!!m.emergingLocker;m.mode='emerge';m.emergeT=0;m.alert=12;m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];m.path=null;m.pathTimer=0;playSample('zombieCry',()=>m.pos,.95,m);turnMonster(m,player.x,player.z,1);m.locker=null;
 }
 function updateZombie(m,dt){
+  if(m.mode==='corner-wait'){
+    m.alert=0;m.chasing=false;const dx=m.pos.x-player.x,dz=m.pos.z-player.z,d=Math.hypot(dx,dz),look=(-Math.sin(yaw)*dx-Math.cos(yaw)*dz)/Math.max(d,.01);turnMonster(m,player.x,player.z,dt);poseCreature(m.mesh,'idle',dt,.45);
+    if(d<4.8&&(look>.45||d<1.7)&&hasLOS(player.x,player.z,m.pos.x,m.pos.z)&&!closedDoorBetween(player.x,player.z,m.pos.x,m.pos.z)){playSample('scaryImpact',()=>m.pos,.6,m);zombieCharge(m);}return 0;
+  }
   if(m.mode==='door-wait'){m.alert=0;return 0;}
   if(m.mode==='door-reveal'){
     if(m.door.amount<.50){m.concealed=true;return 0;}m.concealed=false;
@@ -6194,6 +6257,7 @@ function updateZombie(m,dt){
 }
 const ordinaryEnemyUpdate=updateEnemy;
 updateEnemy=function(m,dt){
+  if(m.type==='enema'&&!m.bossAwake){poseCreature(m.mesh,'idle',dt);if(roomAt(player.x,player.z)!==m.bossRoom&&!monsterCanSee(m))return 0;m.bossAwake=true;m.alert=12;m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];m.stareT=1.1;playSample('scaryImpact',()=>m.pos,.9,m);shakeAmt=Math.max(shakeAmt,.45);}
   if(isZombie(m)){const handled=updateZombie(m,dt);if(handled!==null)return handled;}
   if(m.type==='multi'&&m.ceilingState!=='ground'){
     const distance=Math.hypot(player.x-m.pos.x,player.z-m.pos.z);
@@ -6206,7 +6270,7 @@ updateEnemy=function(m,dt){
       poseCreature(m.mesh,'shriek',dt,1,m.dropTime);if(t>=1){m.ceilingState='ground';m.mesh.rotation.x=0;m.pos.y=0;m.alert=12;m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];m.atkCd=.45;rig.model.traverse(o=>{if(o.isMesh&&o.userData.ceilingShade){o.material.dispose();o.material=rig.asset.material;o.userData.ceilingShade=false;}});spatialStep(m,1.8);playSample('multiRoar',()=>m.pos,.9,m);shakeAmt=Math.max(shakeAmt,.65);}
     }return 0;
   }
-  if(m.type==='granny'&&!m.roamStarted){const d=Math.hypot(player.x-m.pos.x,player.z-m.pos.z);if(d<m.cfg.detect&&hasLOS(m.pos.x,m.pos.z,player.x,player.z)&&!closedDoorBetween(m.pos.x,m.pos.z,player.x,player.z)){m.roamStarted=true;m.roamTime=rnd(7,12);m.roamElapsed=0;}else{m.wait=Math.max(0,m.wait-dt);if(!m.patrol)m.patrol=selectPatrol(m);let moved=m.wait>0?0:followMonsterPath(m,m.patrol,m.cfg.walk,dt);if(m.patrol&&Math.hypot(m.pos.x-cellCX(m.patrol[0]),m.pos.z-cellCX(m.patrol[1]))<.24){m.patrol=null;m.path=null;m.wait=rnd(.4,1.7);}poseCreature(m.mesh,moved>.002?'walk':'idle',dt);return moved;}}
+  if(m.type==='granny'&&!m.roamStarted){if(monsterCanSee(m)||monsterCanHear(m)){m.roamStarted=true;m.roamTime=rnd(3,6);m.roamElapsed=0;}else{m.wait=Math.max(0,m.wait-dt);if(!m.patrol)m.patrol=selectPatrol(m);let moved=m.wait>0?0:followMonsterPath(m,m.patrol,m.cfg.walk,dt);if(m.patrol&&Math.hypot(m.pos.x-cellCX(m.patrol[0]),m.pos.z-cellCX(m.patrol[1]))<.24){m.patrol=null;m.path=null;m.wait=rnd(.4,1.7);}poseCreature(m.mesh,moved>.002?'walk':'idle',dt);return moved;}}
   return ordinaryEnemyUpdate(m,dt);
 };
 const oldResolveGranny=resolveGrannyRoam;resolveGrannyRoam=function(m,roll=Math.random()){const attacking=oldResolveGranny(m,roll);if(attacking)m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];return attacking;};
@@ -6220,7 +6284,7 @@ updateMonsters=function(dt){
   for(const l of lockers){l.amount=lerp(l.amount,l.target,Math.min(1,dt*7));l.hinge.rotation.y=l.amount*Math.PI*.54;}
   const r=roomAt(player.x,player.z);if(r&&r!==currentRoom){currentRoom=r;if(!visitedRooms.has(r.id)){visitedRooms.add(r.id);runStats.rooms++;if(!isSafeFloor()&&Math.random()<ENCOUNTER_RULES.gnomePerRoom)spawnGnome(r);}}
   if(isSafeFloor())return;
-  if(residentType==='granny'&&grannyReturnT>=0){grannyReturnT=Math.max(0,grannyReturnT-dt);if(grannyReturnT===0&&!monsters.some(m=>!m.dead&&isKey(m))){const candidates=rooms.filter(q=>q.kind!=='start'&&Math.hypot(cellCX(q.x)-player.x,cellCX(q.z)-player.z)>6);const q=pick(candidates);if(q){const m=placeResident('granny',q);if(m){m.roamStarted=true;m.roamTime=rnd(7,12);m.roamElapsed=0;grannyReturnT=-1;}}}}
+  if(residentType==='granny'&&grannyReturnT>=0){grannyReturnT=Math.max(0,grannyReturnT-dt);if(grannyReturnT===0&&!monsters.some(m=>!m.dead&&isKey(m))){const candidates=rooms.filter(q=>q.kind!=='start'&&Math.hypot(cellCX(q.x)-player.x,cellCX(q.z)-player.z)>6&&!monsters.some(m=>!m.dead&&roomAt(m.pos.x,m.pos.z)===q));const q=pick(candidates);if(q){const m=placeResident('granny',q);if(m){m.roamStarted=true;m.roamTime=rnd(3,6);m.roamElapsed=0;grannyReturnT=-1;}}}}
   threatWarning=threatLife=0;baseMonsterUpdate(dt);monsters=monsters.filter(m=>!m.dead);
 };
 
@@ -6257,13 +6321,13 @@ const previousEventsUpdate=updateHospitalEvents;updateHospitalEvents=function(dt
 
 
 // ===== game/presentation.js =====
-updateHUD=function(){baseHud();updateDistance();const label='ЭТАЖ '+floor+' / 15';if(floorBox.innerHTML!==label)floorBox.innerHTML=label;};
+updateHUD=function(){baseHud();updateDistance();const label='ЭТАЖ '+floor;if(floorBox.innerHTML!==label)floorBox.innerHTML=label;};
 const AXE_SKINS={original:0xffffff,graphite:0x999999};
 let axeSkin='original';try{const saved=localStorage.getItem('palata13.axeSkin');if(Object.hasOwn(AXE_SKINS,saved))axeSkin=saved;}catch{}
 function applyAxeSkin(key){if(!Object.hasOwn(AXE_SKINS,key))return;axeSkin=key;axeAsset.material.color.setHex(AXE_SKINS[key]);try{localStorage.setItem('palata13.axeSkin',key);}catch{}}
 applyAxeSkin(axeSkin);
 function showShop(){overlayEl.classList.add('white');overlayEl.innerHTML='<div class="kicker">ПАЛАТА 13 / СНАРЯЖЕНИЕ</div><h1 class="shop-title">МАГАЗИН</h1><p>Оформление топора · бесплатно</p><div class="menu-buttons">'+Object.entries({original:'ОРИГИНАЛ',graphite:'ГРАФИТ'}).map(([k,v])=>'<button class="btn" data-menu="axe" data-skin="'+k+'">'+v+(axeSkin===k?' ✓':'')+'</button>').join('')+'<button class="btn secondary" data-menu="back">НАЗАД</button></div>';overlayEl.style.display='flex';}
-showStartScreen=function(){overlayEl.classList.add('white');overlayEl.innerHTML='<div class="kicker">PSX HORROR &nbsp; / &nbsp; НОЧНАЯ СМЕНА</div><h1>ПАЛАТА<br>13</h1><div class="menu-rule"></div><p>Пятнадцать этажей заброшенной больницы. Ищи жёлтую дверь.</p><p style="color:#8b302c;font-weight:bold">РЕКОРД СПУСКА: '+bestDistance+' М</p><div class="menu-buttons"><button class="btn" data-menu="start">НАЧАТЬ ЗАБЕГ</button><button class="btn secondary" data-menu="shop">МАГАЗИН</button></div><p class="menu-controls">WASD · SHIFT · E · ЛКМ</p><div class="menu-foot">ГЛАВА 1 &nbsp; / &nbsp; 15 ЭТАЖЕЙ</div>';overlayEl.style.display='flex';};
+showStartScreen=function(){overlayEl.classList.add('white');overlayEl.innerHTML='<div class="kicker">PSX HORROR &nbsp; / &nbsp; НОЧНАЯ СМЕНА</div><h1>ПАЛАТА<br>13</h1><div class="menu-rule"></div><p>Бесконечные этажи заброшенной больницы. Ищи жёлтую дверь.</p><p style="color:#8b302c;font-weight:bold">РЕКОРД: ЭТАЖ '+bestFloor+' · '+bestDistance+' М</p><div class="menu-buttons"><button class="btn" data-menu="start">НАЧАТЬ ЗАБЕГ</button><button class="btn secondary" data-menu="shop">МАГАЗИН</button></div><p class="menu-controls">WASD · SHIFT · E · ЛКМ</p>';overlayEl.style.display='flex';};
 
 
 // ===== game/startup.js =====

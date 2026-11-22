@@ -36,8 +36,8 @@
   #floorbox small{display:none}
   #distancehud,#draft{display:none}
   .safe-floor #vignette{background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.35) 100%)}
-  .run-stats{display:grid;width:min(380px,85vw);gap:9px;text-align:left;margin:15px auto 25px;color:#c8d4ec;font-size:13px}
-  .run-stats div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #444a55}
+  .run-stats{display:grid;width:min(380px,85vw);gap:3px;text-align:left;margin:12px auto 18px;color:#c8d4ec;font-size:12px;max-height:58vh;overflow:auto}
+  .run-stats div{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid #444a55}
   .run-stats b{color:#fff}
 
   #cross{position:absolute;left:50%;top:50%;width:7px;height:7px;

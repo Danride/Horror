@@ -23,6 +23,13 @@ function turnMonster(m,tx,tz,dt){
   const delta=Math.atan2(Math.sin(wanted-m.angle),Math.cos(wanted-m.angle));
   m.angle+=delta*Math.min(1,dt*12);m.mesh.rotation.y=m.angle;
 }
+function monsterCanHear(m){
+  const speed=Math.hypot(player.vx,player.vz);if(speed<1.1)return false;
+  const d=Math.hypot(player.x-m.pos.x,player.z-m.pos.z),radius=m.cfg.hear*(speed>4?1.3:1);
+  if(d>radius||!hasLOS(m.pos.x,m.pos.z,player.x,player.z))return false;
+  return !closedDoorBetween(m.pos.x,m.pos.z,player.x,player.z)||d<radius*.45;
+}
+function monsterCanSee(m){return Math.hypot(player.x-m.pos.x,player.z-m.pos.z)<m.cfg.detect&&hasLOS(m.pos.x,m.pos.z,player.x,player.z)&&!closedDoorBetween(m.pos.x,m.pos.z,player.x,player.z);}
 function moveMonster(m,tx,tz,speed,dt,stop=0){
   const dx=tx-m.pos.x,dz=tz-m.pos.z,d=Math.hypot(dx,dz);if(d<=stop+.018)return 0;
   const k=Math.min(speed*dt,d-stop)/d,ox=m.pos.x,oz=m.pos.z;
@@ -36,8 +43,8 @@ function moveMonster(m,tx,tz,speed,dt,stop=0){
   for(const other of monsters){
     if(other===m||other.dead||other.concealed||other.ceilingState&&other.ceilingState!=='ground'||m.type==='gnome'||other.type==='gnome')continue;
     const x=m.pos.x-other.pos.x,z=m.pos.z-other.pos.z,dd=Math.hypot(x,z);
-    if(dd>0.001&&dd<.64){
-      const overlap=Math.min(.07,(.64-dd)*.35),rx=m.pos.x+x/dd*overlap,rz=m.pos.z+z/dd*overlap;
+    if(dd<1.02){
+      const overlap=Math.min(.12,(1.02-dd)*.38),rx=m.pos.x+(dd>.001?x/dd:Math.sin(m.angle))*overlap,rz=m.pos.z+(dd>.001?z/dd:Math.cos(m.angle))*overlap;
       if(!circleHits(rx,rz,r)&&Math.hypot(rx-player.x,rz-player.z)>.78){m.pos.x=rx;m.pos.z=rz;}
     }
   }
@@ -46,7 +53,7 @@ function moveMonster(m,tx,tz,speed,dt,stop=0){
 }
 function selectPatrol(m){
   const list=rooms.filter(r=>Math.hypot(m.pos.x-cellCX(r.x),m.pos.z-cellCX(r.z))>3);
-  if(!list.length)return null;const a=list[Math.random()*list.length|0];return [a.x,a.z];
+  if(!list.length)return null;const free=list.filter(r=>!monsters.some(n=>n!==m&&!n.dead&&n.type!=='gnome'&&(roomAt(n.pos.x,n.pos.z)===r||n.patrol?.[0]===r.x&&n.patrol?.[1]===r.z)));const pool=free.length?free:list,a=pool[Math.random()*pool.length|0];return [a.x,a.z];
 }
 function followMonsterPath(m,goal,speed,dt){
   if(!goal)return 0;
@@ -66,8 +73,8 @@ function followMonsterPath(m,goal,speed,dt){
 function removeMonsterQuietly(m){if(m.dead)return;m.dead=true;m.mesh.visible=false;stopSamples(null,m);monsterGroup.remove(m.mesh);disposeRig(m.mesh);}
 function resolveGrannyRoam(m,roll=Math.random()){
   m.roamTime=0;stopSamples('laugh',m);
-  // Each laughing visit has its own independent 80/20 outcome.
-  if(roll<.8){removeMonsterQuietly(m);grannyReturnT=rnd(22,42);threatLife=0;threatCooldown=Math.max(8,grannyReturnT);return false;}
+  // A close encounter commits to pursuit, otherwise the scare can end in retreat.
+  if(roll>=ENCOUNTER_RULES.grannyAttackChance){removeMonsterQuietly(m);grannyReturnT=rnd(10,18);threatLife=0;threatCooldown=Math.max(8,grannyReturnT);return false;}
   m.alert=32;m.path=null;m.pathTimer=0;m.chasing=false;m.wait=0;grannyReturnT=-1;playSample('scream',()=>m.pos,.57,m);showMsg('ОНА БЕЖИТ ЗА ВАМИ',2,true);return true;
 }
 function updateGnome(m,dt){
@@ -86,6 +93,13 @@ function mummyFlank(m,dt){
   const g=m.flankGoal;if(!g)return 0;
   const moved=hasLOS(m.pos.x,m.pos.z,g.x,g.z)?moveMonster(m,g.x,g.z,m.cfg.walk*1.6,dt,.12):followMonsterPath(m,[g.i,g.j],m.cfg.walk*1.6,dt);poseCreature(m.mesh,moved>.002?'walk':'idle',dt,1.1);return moved;
 }
+let pressureLeader=null;
+function waitForEncounterTurn(m,dt,dist){
+  m.supportT=(m.supportT||0)-dt;let moved=0;
+  if(dist<7){if(m.supportT<=0||!m.supportGoal){m.supportT=1.6;const candidates=rooms.filter(r=>Math.hypot(cellCX(r.x)-player.x,cellCX(r.z)-player.z)>8&&!monsters.some(n=>n!==m&&!n.dead&&n.type!=='gnome'&&roomAt(n.pos.x,n.pos.z)===r));const target=candidates.sort((a,b)=>Math.hypot(cellCX(a.x)-m.pos.x,cellCX(a.z)-m.pos.z)-Math.hypot(cellCX(b.x)-m.pos.x,cellCX(b.z)-m.pos.z))[0];m.supportGoal=target?[target.x,target.z]:null;m.path=null;}
+    if(m.supportGoal)moved=followMonsterPath(m,m.supportGoal,m.cfg.walk,dt);else if(dist<4){const d=Math.max(.01,dist);moved=moveMonster(m,m.pos.x+(m.pos.x-player.x)/d*3,m.pos.z+(m.pos.z-player.z)/d*3,m.cfg.walk,dt);}}
+  if(moved<.002)turnMonster(m,player.x,player.z,dt);poseCreature(m.mesh,moved>.002?'walk':'idle',dt,.75);return moved;
+}
 function updateEnemy(m,dt){
   if(m.type==='gnome')return updateGnome(m,dt);
   const cfg=m.cfg,dx=player.x-m.pos.x,dz=player.z-m.pos.z,dist=Math.hypot(dx,dz);
@@ -93,8 +107,9 @@ function updateEnemy(m,dt){
   if(m.type==='granny'&&m.roamTime>0){
     m.roamTime-=dt;m.roamElapsed=(m.roamElapsed||0)+dt;
     if(!m.laughStarted){m.laughStarted=true;playSample('laugh',()=>m.pos,2.25,m);}
-    if(m.roamTime<=0||(m.roamElapsed>5.5&&seen&&dist<7.5)){
-      if(!resolveGrannyRoam(m))return 0;
+    const close=seen&&dist<2.8&&m.roamElapsed>.6;
+    if(close||m.roamTime<=0||(m.roamElapsed>2.5&&seen&&dist<7.5)){
+      if(!resolveGrannyRoam(m,close?0:Math.random()))return 0;
     }else{
       m.alert=0;m.chasing=false;m.attackT=0;
       if(!m.patrol){const near=rooms.filter(r=>Math.hypot(cellCX(r.x)-m.pos.x,cellCX(r.z)-m.pos.z)>4).sort((a,b)=>Math.hypot(cellCX(a.x)-player.x,cellCX(a.z)-player.z)-Math.hypot(cellCX(b.x)-player.x,cellCX(b.z)-player.z));if(near.length){const r=near[Math.random()*Math.min(3,near.length)|0];m.patrol=[r.x,r.z];}}
@@ -104,10 +119,10 @@ function updateEnemy(m,dt){
     }
   }
   const was=m.chasing;
-  if(seen||(openLine&&dist<cfg.hear)){m.alert=Math.max(m.alert,7);m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];}
+  if(seen||monsterCanHear(m)||(openLine&&dist<2.4)){m.alert=Math.max(m.alert,7);m.lastSeen=[Math.floor(player.x/BLOCK),Math.floor(player.z/BLOCK)];}
   else m.alert=Math.max(0,m.alert-dt);
   m.chasing=m.alert>0;
-  if(m.chasing&&!was){creatureVoice(m,m.type==='granny'?'cry':'growl');m.path=null;m.pathTimer=0;m.growlT=rnd(2,3.5);}
+  if(m.chasing&&!was){creatureVoice(m,m.type==='granny'?'cry':'growl');m.path=null;m.pathTimer=0;m.growlT=rnd(2,3.5);if(m.type!=='granny'&&m.type!=='enema'&&dist>3)m.stareT=rnd(.7,1.5);}
   m.growlT-=dt;
   if(m.growlT<=0){m.growlT=m.chasing?rnd(2.3,4.5):rnd(7,14);if(dist<22)creatureVoice(m,m.type==='granny'?(m.chasing?'cry':'whisper'):'growl');}
   m.atkCd=Math.max(0,m.atkCd-dt);
@@ -122,6 +137,8 @@ function updateEnemy(m,dt){
     if(m.attackT>=cfg.duration){m.attackT=0;m.atkCd=cfg.recover;m.path=null;m.pathTimer=0;}
     return 0;
   }
+  if(m.chasing&&dist<14){if(!pressureLeader||pressureLeader.dead)pressureLeader=m;if(pressureLeader!==m)return waitForEncounterTurn(m,dt,dist);}
+  if(m.stareT>0){m.stareT=Math.max(0,m.stareT-dt);turnMonster(m,player.x,player.z,dt);poseCreature(m.mesh,'idle',dt,.65);return 0;}
   if(m.type==='buried'&&m.chasing&&seen&&!mummyRearSector(m)){
     m.frontWait=(m.frontWait||0)+dt;
     if(m.frontWait<3.5||dist>cfg.range){const moved=mummyFlank(m,dt);if(m.flankGoal)return moved;}
@@ -159,6 +176,9 @@ function updateEnemy(m,dt){
   return moved;
 }
 function updateMonsters(dt){
+  const active=monsters.filter(m=>!m.dead&&!m.concealed&&m.type!=='gnome'&&(!m.ceilingState||m.ceilingState==='ground')&&(m.roamTime||0)<=0&&(m.chasing||m.alert>0||m.attackT>0)&&Math.hypot(m.pos.x-player.x,m.pos.z-player.z)<14);
+  const attacking=active.find(m=>m.attackT>0);
+  pressureLeader=attacking||(active.includes(pressureLeader)?pressureLeader:active.sort((a,b)=>Math.hypot(a.pos.x-player.x,a.pos.z-player.z)-Math.hypot(b.pos.x-player.x,b.pos.z-player.z))[0]||null);
   for(const m of monsters){
     if(gameState!=='playing'||scareTime>0)break;
     if(m.dead)continue;

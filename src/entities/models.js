@@ -94,7 +94,19 @@ function sampleTrack(keys,time){
   }
   return out;
 }
+function makeHallBoss(){
+  const root=new THREE.Group(),body=new THREE.Group();root.add(body);
+  const rubber=propMat(0x733a32),dark=propMat(0x302421),rim=propMat(0x986259),eye=propMat(0xc8ba91),pupil=propMat(0x1a1110);
+  const bulb=new THREE.Mesh(new THREE.SphereGeometry(1,12,8),rubber);bulb.scale.set(.78,.96,.72);bulb.position.y=1.45;body.add(bulb);
+  const neck=new THREE.Mesh(new THREE.CylinderGeometry(.13,.24,.53,8),rim);neck.position.y=2.55;body.add(neck);
+  const nozzle=new THREE.Mesh(new THREE.CylinderGeometry(.075,.12,.66,8),dark);nozzle.position.set(0,2.88,-.18);nozzle.rotation.x=-.4;body.add(nozzle);
+  for(const x of [-.23,.23]){const e=new THREE.Mesh(new THREE.SphereGeometry(.13,8,6),eye);e.position.set(x,1.78,-.66);body.add(e);propBox(body,pupil,x,1.78,-.77,.07,.09,.035);}
+  propBox(body,dark,0,1.37,-.71,.39,.12,.08);
+  const legs=[];for(const x of [-.41,.41]){const leg=new THREE.Group();leg.position.set(x,.82,0);root.add(leg);propBox(leg,dark,0,-.30,0,.15,.63,.19);propBox(leg,rubber,0,-.71,-.12,.34,.23,.55);legs.push(leg);}
+  root.userData.hallBoss={body,legs,time:0};return root;
+}
 function makeCreature(type){
+  if(type==='enema')return makeHallBoss();
   const asset=compileCreature(type),g=new THREE.Group(),model=new THREE.Group(),bones=[];
   g.add(model);model.scale.setScalar(asset.scale);
   asset.nodes.forEach((d,i)=>{
@@ -106,9 +118,10 @@ function makeCreature(type){
   g.userData.rig={type,asset,bones,model,head:bones[asset.head],state:null,time:0,blendT:.2,from:null};
   poseCreature(g,'idle',0,1,0);return g;
 }
-function disposeRig(g){g.traverse(o=>{if(o.isMesh&&o.userData.ceilingShade)o.material.dispose();});g.clear();} // Creature geometry and permanent materials are shared.
+function disposeRig(g){if(g.userData.hallBoss){disposeTree(g);return;}g.traverse(o=>{if(o.isMesh&&o.userData.ceilingShade)o.material.dispose();});g.clear();} // Creature geometry and permanent materials are shared.
 const poseEuler=new THREE.Euler(0,0,0,'ZYX'),poseQ=new THREE.Quaternion(),poseP=new THREE.Vector3();
 function poseCreature(g,state,dt=0,rate=1,forceTime=null){
+  if(g.userData.hallBoss){const b=g.userData.hallBoss;b.time+=dt*rate;const t=forceTime??b.time,walking=state==='walk'||state==='run',attack=state==='attack';b.body.position.y=walking?Math.abs(Math.sin(t*9))*.12:attack?Math.sin(Math.min(1,t/1.5)*Math.PI)*.35:Math.sin(t*2)*.025;b.body.scale.y=attack?1-.17*Math.sin(Math.min(1,t/1.5)*Math.PI):1;b.body.rotation.x=attack?-.26*Math.sin(Math.min(1,t/1.5)*Math.PI):0;b.legs.forEach((leg,i)=>leg.rotation.x=walking?Math.sin(t*9+i*Math.PI)*.42:attack?-.12:0);return;}
   const r=g.userData.rig;if(!r)return;
   const clip=r.asset.clips[BB_CLIPS[r.type][state]];
   if(!clip)return;
@@ -180,16 +193,18 @@ function creatureVoice(m,kind='growl'){
 
 /* ---------- ровно два существа на каждом этаже ---------- */
 const ENEMY_CONFIG={
-  granny:{hp:3,run:4.3,walk:1.48,range:1.60,impact:.22,duration:.75,damage:16,recover:.60,hit:.35,step:.75,detect:11,hear:2.8},
-  buried:{hp:4,run:3.8,walk:1.30,range:1.77,impact:.59,duration:1.30,damage:21,recover:.82,hit:.65,step:.92,detect:8,hear:3.6},
+  granny:{hp:3,run:4.3,walk:1.48,range:1.60,impact:.22,duration:.75,damage:16,recover:.60,hit:.35,step:.75,detect:16,hear:6},
+  buried:{hp:4,run:3.8,walk:1.30,range:1.77,impact:.59,duration:1.30,damage:21,recover:.82,hit:.65,step:.92,detect:12,hear:5},
   multi:{hp:5,run:4.35,walk:1.8,range:2.05,impact:.46,duration:1.12,damage:23,recover:.85,hit:.45,step:.53,detect:ENCOUNTER_RULES.multiGroundRadius,hear:5.5},
-  patient:{hp:2,run:3.6,walk:1.35,range:1.55,impact:.42,duration:1.02,damage:12,recover:.82,hit:.45,step:.65,detect:9,hear:3.2},
-  orderly:{hp:3,run:3.1,walk:1.06,range:1.75,impact:.62,duration:1.28,damage:18,recover:1.0,hit:.55,step:.87,detect:10,hear:3.8},
+  patient:{hp:2,run:3.6,walk:1.35,range:1.55,impact:.42,duration:1.02,damage:12,recover:.82,hit:.45,step:.65,detect:11,hear:5},
+  orderly:{hp:3,run:3.1,walk:1.06,range:1.75,impact:.62,duration:1.28,damage:18,recover:1.0,hit:.55,step:.87,detect:13,hear:6},
+  enema:{hp:9,run:2.65,walk:1.30,range:2.05,impact:.78,duration:1.50,damage:22,recover:1.45,hit:.42,step:.95,detect:20,hear:8},
   gnome:{hp:1,run:5.3,walk:1.65,range:0,impact:0,duration:0,damage:0,recover:0,hit:0,step:.48}
 };
 function makeMonster(type,pos){
   if(!pos)return null;
-  const mesh=makeCreature(type),base=ENEMY_CONFIG[type],d=Math.max(0,floor-1),cfg=type==='gnome'?{...base,run:Math.min(6.2,base.run+d*.06)}:{...base,hp:base.hp+2+Math.min(4,Math.floor(d/3)),run:Math.min(4.85,base.run+d*.07),walk:Math.min(1.9,base.walk+d*.035),damage:Math.min(48,Math.round(base.damage*1.35+d*1.55)),recover:Math.max(.34,base.recover-d*.035)};
+  const mesh=makeCreature(type),base=ENEMY_CONFIG[type],d=Math.max(0,floor-1);
+  const cfg=type==='gnome'?{...base,run:Math.min(6.2,base.run+d*.06)}:{...base,hp:base.hp+2+Math.floor(d/2),run:Math.min(4.85,base.run+d*.045),walk:Math.min(1.95,base.walk+d*.025),detect:Math.min(28,base.detect+d*.12),hear:Math.min(10,base.hear+d*.08),damage:Math.min(75,Math.round(base.damage*1.35+d*.72)),recover:Math.max(.40,base.recover-d*.014)};
   mesh.position.copy(pos);monsterGroup.add(mesh);
   return {type,cfg,mesh,pos:pos.clone(),angle:Math.random()*Math.PI*2,hp:cfg.hp,dead:false,
     path:null,pathGoal:-1,pathTimer:0,patrol:null,wait:rnd(.2,1.1),alert:0,chasing:false,atkCd:0,

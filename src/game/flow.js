@@ -2,7 +2,8 @@
    ФЛОУ ИГРЫ
    ========================================================== */
 let runStats={time:0,walked:0,rooms:0,kills:0,hits:0,damage:0,cleared:0,safe:0};
-function runSummary(){const t=Math.floor(runStats.time),clock=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');const rows=[['Пройдено этажей',runStats.cleared+' / 15'],['Время забега',clock],['Пройдено метров',Math.floor(runStats.walked)+' м'],['Посещено комнат',runStats.rooms],['Побеждено монстров',runStats.kills],['Попаданий топором',runStats.hits],['Получено урона',Math.round(runStats.damage)],['Безопасных этажей',runStats.safe],['Рекорд спуска',bestDistance+' м']];return '<div class="run-stats">'+rows.map(([k,v])=>'<div><span>'+k+'</span><b>'+v+'</b></div>').join('')+'</div>';}
+let bestFloor=1;try{const n=Number(localStorage.getItem('palata13.bestFloor'));if(Number.isSafeInteger(n)&&n>0)bestFloor=n;}catch{}
+function runSummary(){const t=Math.floor(runStats.time),clock=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');const rows=[['Пройдено этажей',runStats.cleared],['Достигнут этаж',floor],['Рекорд этажа',bestFloor],['Время забега',clock],['Пройдено метров',Math.floor(runStats.walked)+' м'],['Посещено комнат',runStats.rooms],['Побеждено монстров',runStats.kills],['Попаданий топором',runStats.hits],['Получено урона',Math.round(runStats.damage)],['Безопасных этажей',runStats.safe],['Рекорд спуска',bestDistance+' м']];return '<div class="run-stats">'+rows.map(([k,v])=>'<div><span>'+k+'</span><b>'+v+'</b></div>').join('')+'</div>';}
 function descend(){
   if (descending || gameState!=='playing') return;
   descending = true;
@@ -19,8 +20,8 @@ function finishDescend(){
     if(gameState!=='playing'||!descending)return;
     stopSamples();distantTimer=rnd(32,60);
     runStats.cleared++;runCompleted+=Math.max(0,routeDist[gidx(...startCell)])*BLOCK;floorProgress=0;saveDistanceRecord(runCompleted);
-    if(floor===15){gameState='won';descending=false;fadeEl.style.opacity='0';for(const k in keys)keys[k]=false;document.exitPointerLock();stopSamples();showOverlay('ВЫ ВЫБРАЛИСЬ',runSummary(),'ИГРАТЬ СНОВА','green');return;}
     floor++;
+    if(floor>bestFloor){bestFloor=floor;try{localStorage.setItem('palata13.bestFloor',String(bestFloor));}catch{}}
     // Regenerate everything
     generateMaze();
     if(isSafeFloor())runStats.safe++;

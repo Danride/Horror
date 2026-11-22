@@ -73,7 +73,7 @@ function loop(now){
   update(dt);
   if(scareTime>0&&scareMesh){
     const t=clamp(1-scareTime/scareDuration,0,1),r=scareMesh.userData.rig;
-    if(!r){scareMesh.rotation.set(.12+Math.sin(t*25)*.08,Math.PI+Math.sin(t*24)*.09,Math.sin(t*18)*.07);scareCamera.position.set(0,.91,lerp(-2.4,-.66,Math.min(1,t*4)));scareCamera.lookAt(0,.82,0);renderer.autoClear=true;renderer.render(scareScene,scareCamera);requestAnimationFrame(loop);return;}
+    if(!r){const boss=!!scareMesh.userData.hallBoss;if(boss)poseCreature(scareMesh,'attack',dt,1,t*1.5);scareMesh.rotation.set(.12+Math.sin(t*25)*.08,boss?0:Math.PI+Math.sin(t*24)*.09,Math.sin(t*18)*.07);const aim=boss?1.70:.82;scareCamera.position.set(0,aim+.09,lerp(boss?-3.6:-2.4,boss?-1.2:-.66,Math.min(1,t*4)));scareCamera.lookAt(0,aim,0);renderer.autoClear=true;renderer.render(scareScene,scareCamera);requestAnimationFrame(loop);return;}
     const clip=r.asset.clips[BB_CLIPS[r.type].scare];poseCreature(scareMesh,'scare',dt,1,t*clip.length);
     scareMesh.updateMatrixWorld(true);
     const head=r.head?r.head.getWorldPosition(new THREE.Vector3()):new THREE.Vector3(0,1.65,0);head.y+=.14;

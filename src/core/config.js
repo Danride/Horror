@@ -12,12 +12,13 @@ const PIXEL_SCALE = 3;
 // All probabilities are evaluated once at their encounter/room boundary.
 const ENCOUNTER_RULES = Object.freeze({
   maximumRegulars: 4,
-  gnomePerRoom: .05,
+  gnomePerRoom: .15,
+  grannyAttackChance: .65,
   zombieDoor: .20,
   zombieLocker: .20,
   zombieWandering: .20,
-  multiCeilingRadius: 5.2,
-  multiGroundRadius: 17
+  multiCeilingRadius: 6.5,
+  multiGroundRadius: 19
 });
 
 const clamp = (v,a,b)=>v<a?a:v>b?b:v;

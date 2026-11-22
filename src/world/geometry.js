@@ -82,7 +82,7 @@ function placeLamps(){
   }
   lamps = [];
 
-  const chosen=roomCells.filter((c,i)=>isSafeFloor()||i===0||Math.random()<.82);
+  const chosen=roomCells.filter((c,i)=>isSafeFloor()||i===0||rooms[i]?.kind==='exit'||Math.random()<(rooms[i]?.branch ? .47 : .72));
   if(floorType==='corridor'){for(let z=7;z<=35;z+=4)chosen.push([15,z]);}
   if(floorType==='hall'){for(const x of [11,19])for(const z of [12,18])chosen.push([x,z]);}
   for(const [a,b] of roomLinks)if(Math.random()<.35)chosen.push([(a.x+b.x)/2,(a.z+b.z)/2]);
