@@ -65,7 +65,7 @@ function die(){
   gameState = 'dead';
   clearScare();swinging=false;descending=false;fadeEl.style.opacity='0';
   for (const k in keys) keys[k] = false;
-  document.exitPointerLock();
+  clearInput();releasePointerLock();refreshInputControls();
   tone(120, 1.2, 'sawtooth', 0.09, 30);
   noise(1.0, 0.10, 200, 0.6);
   // Keep the one existing ambient scheduler alive across retries.

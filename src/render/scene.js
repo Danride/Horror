@@ -11,7 +11,7 @@ scene.add(camera);
 
 let renderer;
 try{renderer=new THREE.WebGLRenderer({ antialias:false, powerPreference:'high-performance' });}
-catch(e){document.getElementById('overlay').innerHTML='<h1>НЕТ WEBGL</h1><p>Включите аппаратное ускорение браузера или откройте игру в актуальном Chrome / Edge.</p>';throw e;}
+catch(firstError){try{renderer=new THREE.WebGLRenderer({antialias:false});}catch(e){document.getElementById('overlay').innerHTML='<h1>НЕТ WEBGL</h1><p>Графический движок не запустился. Обновите приложение VK или браузер и включите аппаратное ускорение.</p>';throw e;}}
 renderer.setClearColor(0x000000);
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 renderer.toneMappingExposure = 1.15;
@@ -25,7 +25,7 @@ const scareLamp = new THREE.PointLight(0xffb497,9,8,1.5);
 scareLamp.position.set(-.8,2.3,-1.3);scareScene.add(scareLamp);
 
 function resize(){
-  const w = window.innerWidth, h = window.innerHeight;
+  const w = Math.max(1,window.innerWidth), h = Math.max(1,window.innerHeight);
   renderer.setSize(Math.max(1,Math.ceil(w/PIXEL_SCALE)), Math.max(1,Math.ceil(h/PIXEL_SCALE)), false);
   renderer.domElement.style.width = w+'px';
   renderer.domElement.style.height = h+'px';
@@ -34,6 +34,7 @@ function resize(){
   scareCamera.aspect=w/h;scareCamera.updateProjectionMatrix();
 }
 window.addEventListener('resize', resize);
+window.visualViewport?.addEventListener('resize',resize);
 resize();
 
 /* ---------- свет ---------- */

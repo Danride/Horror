@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Палата 13 — PSX Horror</title>
 <style>/*__CSS__*/</style>
 </head>
@@ -23,9 +23,17 @@
   <div id="cross"></div>
   <div id="draft"><div class="dhead">СПУСК</div><div class="dtrack"><div id="dfill"></div></div></div>
   <div id="msg"></div>
-  <div id="overlay"></div>
+  <div id="touch-controls" hidden>
+    <div id="move-stick" aria-label="Движение"><div id="stick-thumb"></div></div>
+    <div class="touch-actions"><button id="touch-sprint" aria-label="Бег">БЕГ</button><button id="touch-interact" aria-label="Взаимодействие">E</button><button id="touch-attack" aria-label="Взмах топором">ТОПОР</button></div>
+    <button id="touch-pause" aria-label="Пауза">Ⅱ</button>
+  </div>
+  <div id="drag-hint" hidden>ПКМ + движение мыши — обзор · ЛКМ — топор · Esc — пауза</div>
+  <div id="overlay"><p>Загрузка…</p></div>
 </div>
 
+<script>/*__VK_BRIDGE__*/
+/*__VK_HOST__*/</script>
 <script>/*__ENGINE__*/</script>
 
 <script type="module">/*__GAME__*/</script>

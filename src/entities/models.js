@@ -159,7 +159,7 @@ function spatialStep(m,force=1){
   if(d>=profile.range)return;
   const occluded=!hasLOS(m.pos.x,m.pos.z,player.x,player.z)||closedDoorBetween(m.pos.x,m.pos.z,player.x,player.z);
   const vol=Math.pow(1-d/profile.range,1.25)*force*(occluded?.46:1),volume=clamp(profile.gain*vol,.0002,.42);
-  const g=actx.createGain(),pan=actx.createStereoPanner(),now=actx.currentTime;
+  const g=actx.createGain(),pan=audioPan(),now=actx.currentTime;
   pan.pan.value=clamp((dx*Math.cos(yaw)-dz*Math.sin(yaw))/Math.max(1,d),-1,1);
   g.gain.setValueAtTime(.0001,now);g.gain.linearRampToValueAtTime(volume,now+.009);g.gain.exponentialRampToValueAtTime(.0001,now+profile.tail);
   const src=actx.createBufferSource();src.buffer=getNoise();
@@ -176,7 +176,7 @@ function creatureVoice(m,kind='growl'){
   if(d>=24)return;
   const occluded=!hasLOS(m.pos.x,m.pos.z,player.x,player.z), now=actx.currentTime;
   const vol=(1-d/24)**1.6*(occluded?.36:1), duration=kind==='cry'?.72:kind==='whisper'?1.1:rnd(.55,1.3);
-  const env=actx.createGain(), pan=actx.createStereoPanner(), filter=actx.createBiquadFilter();
+  const env=actx.createGain(), pan=audioPan(), filter=actx.createBiquadFilter();
   pan.pan.value=clamp((dx*Math.cos(yaw)-dz*Math.sin(yaw))/Math.max(1,d),-1,1);
   filter.type='lowpass';filter.frequency.value=occluded?430:kind==='whisper'?2900:1900;
   env.gain.setValueAtTime(.0001,now);env.gain.linearRampToValueAtTime(.11*vol,now+.095);env.gain.linearRampToValueAtTime(.058*vol,now+duration*.63);env.gain.exponentialRampToValueAtTime(.0001,now+duration);

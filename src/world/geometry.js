@@ -178,7 +178,7 @@ function anomalyVoice(kind,x,z,level=1){
   if(!actx||actx.state!=='running'||!master)return;
   const dx=x-player.x,dz=z-player.z,dist=Math.hypot(dx,dz);if(dist>24)return;
   const audible=hasLOS(player.x,player.z,x,z), gain=(1-dist/25)**1.35*(audible?1:.32)*level;
-  const pan=actx.createStereoPanner(), low=actx.createBiquadFilter(), now=actx.currentTime;
+  const pan=audioPan(), low=actx.createBiquadFilter(), now=actx.currentTime;
   pan.pan.value=clamp((dx*Math.cos(yaw)-dz*Math.sin(yaw))/Math.max(1,dist),-1,1);
   low.type='lowpass';low.frequency.value=audible?4500:600;low.connect(pan);pan.connect(master);
   function pulse(freq,dur,volume,delay=0,slide=0,type='triangle'){

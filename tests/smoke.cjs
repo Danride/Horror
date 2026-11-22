@@ -56,5 +56,7 @@ const run=s=>vm.runInContext(s,context);
   assert.ok(!script.includes('function makeTrap')&&!script.includes('function hospitalLabel'));
   assert.ok(run(`(()=>{runStats={time:65,walked:23,rooms:4,kills:2,hits:7,damage:18,cleared:3,safe:1};const html=runSummary();return html.includes('1:05')&&html.includes('23 м')&&html.includes('Пройдено этажей')&&html.includes('Побеждено монстров');})()`));
   assert.ok(run(`(()=>{resetGame();floor=15;gameState='playing';descending=true;finishDescend();return floor===16&&gameState==='playing'&&!descending&&bestFloor>=16&&floorBox.innerHTML==='ЭТАЖ 16';})()`));
+  assert.ok(run(`(()=>{resetGame();renderer.domElement.requestPointerLock=()=>{throw Error('Pointer lock blocked by iframe');};requestLock();const ok=gameState==='playing'&&inputMode==='drag'&&!dragHint.hidden&&overlayEl.style.display==='none';pauseGame();return ok&&gameState==='paused'&&dragHint.hidden;})()`));
+  assert.ok(run(`(()=>{window.matchMedia=()=>({matches:true});requestLock();const ok=gameState==='playing'&&inputMode==='touch'&&!touchControls.hidden;moveStick.getBoundingClientRect=()=>({left:0,top:0,width:112,height:112});updateStick({clientX:90,clientY:15});const moving=keys.KeyW&&keys.KeyD;pauseGame();return ok&&moving&&touchControls.hidden&&!keys.KeyW&&!keys.KeyD;})()`));
   console.log('All smoke checks passed. Rendering and audio output are mocked.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

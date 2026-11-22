@@ -45,6 +45,8 @@ const game = modules.map(name => `\n// ===== ${name}.js =====\n${read('src/'+nam
   .replace('/*__MODELS__*/{}',()=>embed(models)).replace('/*__AUDIO__*/{}',()=>embed(samples)).replace('/*__RECEPTION__*/{}',()=>embed(JSON.parse(read('assets/models/reception.gltf'))));
 const code = read('src/index.template.html')
   .replace('/*__CSS__*/',()=>read('src/style.css'))
+  .replace('/*__VK_BRIDGE__*/',()=>read('vendor/vk-bridge.min.js'))
+  .replace('/*__VK_HOST__*/',()=>read('src/platform/vk-host.js'))
   .replace('/*__ENGINE__*/',()=> '\n'+read('vendor/three.min.js'))
   .replace('/*__GAME__*/',()=>game);
 assert.ok(!code.includes('https://unpkg.com'));

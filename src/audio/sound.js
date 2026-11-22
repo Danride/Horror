@@ -2,6 +2,10 @@
    АУДИО
    ========================================================== */
 let actx = null, noiseBuf = null, master = null;
+function audioPan(){
+  if(typeof actx.createStereoPanner==='function')return actx.createStereoPanner();
+  const node=actx.createGain();node.pan={value:0,setTargetAtTime(){}};return node;
+}
 const SAMPLE_DATA=/*__AUDIO__*/{};
 const audioBuffers=new Map(),sampleVoices=[];
 let samplesReady=null, distantTimer=36;
@@ -21,7 +25,7 @@ function playSample(kind,position,level,owner=null){
   if(!actx||actx.state!=='running')return null;prepareSamples();const buf=audioBuffers.get(kind);
   if(!buf){if(samplesReady)samplesReady.then(()=>{if(gameState==='playing'&&(!owner||(!owner.dead&&monsters.includes(owner)&&(kind!=='laugh'||owner.roamTime>0)))&&audioBuffers.has(kind))playSample(kind,position,level,owner);});return null;}
   if(sampleVoices.some(v=>v.kind===kind&&v.owner===owner))return null;
-  const src=actx.createBufferSource(),gain=actx.createGain(),pan=actx.createStereoPanner(),filter=actx.createBiquadFilter();src.buffer=buf;filter.type='lowpass';filter.Q.value=.5;
+  const src=actx.createBufferSource(),gain=actx.createGain(),pan=audioPan(),filter=actx.createBiquadFilter();src.buffer=buf;filter.type='lowpass';filter.Q.value=.5;
   const v={kind,owner,position,level,src,gain,pan,filter};sampleVoices.push(v);updateSamplePosition(v,true);
   src.connect(filter);filter.connect(gain);gain.connect(pan);pan.connect(master);
   src.onended=()=>{const i=sampleVoices.indexOf(v);if(i>=0)sampleVoices.splice(i,1);for(const n of [src,filter,gain,pan])try{n.disconnect();}catch{}};
@@ -42,9 +46,9 @@ function initAudio(){
     limit.threshold.value = -16; limit.ratio.value = 8;
     master.connect(limit); limit.connect(actx.destination);
     prepareSamples();
-  } catch(e){}
+  } catch(e){actx=null;master=null;}
 }
-function resumeAudio(){ if (actx && actx.state==='suspended') actx.resume(); }
+function resumeAudio(){ if (actx && actx.state==='suspended') {try{Promise.resolve(actx.resume()).catch(()=>{});}catch(_){}} }
 function getNoise(){
   if (!noiseBuf){
     noiseBuf = actx.createBuffer(1, actx.sampleRate*2, actx.sampleRate);
