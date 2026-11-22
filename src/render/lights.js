@@ -2,7 +2,10 @@
    СВЕТ
    ========================================================== */
 function updateLights(dt){
+  ambientLight.color.setHex(isSafeFloor()?0xe6e3dc:0x1b2534);ambientLight.intensity=isSafeFloor()?1.6:.85;
+  if(isSafeFloor()){for(const L of lamps){L.cur=1;L.mat.color.setHex(0xfff3df);}}
   for (const L of lamps){
+    if(isSafeFloor())continue;
     L.dropT -= dt;
     if (L.dropT <= 0){
       L.dropDur = rnd(0.05, 0.40);

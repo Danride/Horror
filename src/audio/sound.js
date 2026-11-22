@@ -30,6 +30,7 @@ function playSample(kind,position,level,owner=null){
 function stopSamples(kind=null,owner=null){for(const v of sampleVoices.slice())if((!kind||v.kind===kind)&&(!owner||v.owner===owner)){try{v.src.stop();}catch{}const i=sampleVoices.indexOf(v);if(i>=0)sampleVoices.splice(i,1);}}
 function updateSamples(dt){
   for(const v of sampleVoices)updateSamplePosition(v);
+  if(isSafeFloor())return;
   distantTimer-=dt;if(distantTimer<=0){distantTimer=rnd(75,145);const options=rooms.filter(r=>{const d=Math.hypot(cellCX(r.x)-player.x,cellCX(r.z)-player.z);return d>10&&d<37;});if(options.length){const r=options[Math.random()*options.length|0];playSample('distant',{x:cellCX(r.x),z:cellCX(r.z)},.40);}}
 }
 function initAudio(){

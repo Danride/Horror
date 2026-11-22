@@ -1,4 +1,4 @@
-updateHUD=function(){baseHud();updateDistance();const label='ЭТАЖ '+floor+' / 15<small>'+ward().name+' · КОМНАТЫ '+visitedRooms.size+'/'+rooms.length+'</small>';if(floorBox.innerHTML!==label)floorBox.innerHTML=label;const dh=document.getElementById('distancehud'),d=Math.floor(runCompleted+floorProgress),v=d+' М<small>РЕКОРД '+bestDistance+' М</small>';if(dh.innerHTML!==v)dh.innerHTML=v;};
+updateHUD=function(){baseHud();updateDistance();const label='ЭТАЖ '+floor+' / 15';if(floorBox.innerHTML!==label)floorBox.innerHTML=label;};
 const AXE_SKINS={original:0xffffff,graphite:0x999999};
 let axeSkin='original';try{const saved=localStorage.getItem('palata13.axeSkin');if(Object.hasOwn(AXE_SKINS,saved))axeSkin=saved;}catch{}
 function applyAxeSkin(key){if(!Object.hasOwn(AXE_SKINS,key))return;axeSkin=key;axeAsset.material.color.setHex(AXE_SKINS[key]);try{localStorage.setItem('palata13.axeSkin',key);}catch{}}

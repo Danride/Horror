@@ -12,7 +12,8 @@ const floorBox = document.getElementById('floorbox');
 let msgTimer = 0;
 
 function showMsg(text, dur=2.5, warn=false){
-  msgEl.textContent = text;
+  if(!/^E(?:\s|$)/.test(text))return;
+  msgEl.textContent = 'E';
   msgEl.classList.toggle('warn', warn);
   msgEl.style.opacity = '1';
   msgTimer = dur;

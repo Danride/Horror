@@ -117,6 +117,7 @@ function doAxeHit(){
     if (dot < 0.48) continue;
 
     hitSomething = true;
+    runStats.hits++;
     m.hp -= 1;
     m.alert = Math.max(m.alert || 0, 9);
 

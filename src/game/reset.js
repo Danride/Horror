@@ -4,6 +4,7 @@
 function resetGame(){
   floor = 1;
   runCompleted=0;floorProgress=0;
+  runStats={time:0,walked:0,rooms:0,kills:0,hits:0,damage:0,cleared:0,safe:0};
   stopSamples();distantTimer=rnd(30,55);
   clearScare();scareCooldown=15;fadeEl.style.opacity='0';descendT=0;
 
@@ -14,6 +15,7 @@ function resetGame(){
   particles.length = 0;
 
   generateMaze();
+  if(isSafeFloor())runStats.safe++;
   buildMazeMesh();
   placeStairs();
   placeAnomalies();
@@ -39,6 +41,7 @@ function resetGame(){
   descending = false;
 
   spawnFloorMonsters();
+  updateMusicIntensity();
 
   gameState = 'ready';
   updateHUD();

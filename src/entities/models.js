@@ -197,6 +197,7 @@ function makeMonster(type,pos){
 }
 function killMonster(m){
   if(m.dead)return;
+  if(m.type!=='gnome')runStats.kills++;
   if(m.locker)m.locker.occupied=false;
   if(m.emergingLocker)m.emergingLocker.occupied=false;
   if(m.door?.zombie===m)m.door.zombie=null;

@@ -27,6 +27,7 @@ function spawnRegular(mode,usedRooms=new Set()){
   const m=makeMonster(type,pos);m.mode=mode==='door'?'door-wait':mode==='locker'?'locker-wait':'wander';m.concealed=!!(d||l);m.mesh.visible=!m.concealed;m.door=d;m.locker=l;m.role='regular';m.patrol=null;if(d)d.zombie=m;monsters.push(m);usedRooms.add(r);return m;
 }
 function spawnFloorMonsters(){
+  if(isSafeFloor()){residentType=null;return;}
   residentType=floor===1?'granny':floor===2?'multi':Math.random()<.5?'granny':'multi';
   const main=rooms.filter(r=>!r.branch&&r.kind==='normal'),mid=main.slice(Math.max(0,Math.floor(main.length*.32)),Math.max(1,Math.ceil(main.length*.8))),r=mid[Math.random()*mid.length|0]||main[0]||rooms[1];
   placeResident(residentType,r);const used=new Set([r]),count=Math.floor(Math.random()*(ENCOUNTER_RULES.maximumRegulars+1));for(let i=0;i<count;i++)spawnRegular(zombieMode(),used);
@@ -103,7 +104,8 @@ function spawnGnome(r){
 updateMonsters=function(dt){
   for(const d of doors){d.autoBlock=Math.max(0,(d.autoBlock||0)-dt);if(!d.autoBlock){for(const m of monsters){if(m.dead||m.concealed||m.ceilingState&&m.ceilingState!=='ground'||Math.hypot(m.pos.x-d.x,m.pos.z-d.z)>1.4||d.zombie&&m.mode!=='flee')continue;d.open=true;if(m.mode==='flee')m.fleeDoors.add(d);}}d.amount=clamp(d.amount+(d.open?dt*2.7:-dt*5),0,1);d.hinge.rotation.y=-d.amount*Math.PI*.49;}
   for(const l of lockers){l.amount=lerp(l.amount,l.target,Math.min(1,dt*7));l.hinge.rotation.y=l.amount*Math.PI*.54;}
-  const r=roomAt(player.x,player.z);if(r&&r!==currentRoom){currentRoom=r;if(!visitedRooms.has(r.id)){visitedRooms.add(r.id);if(Math.random()<ENCOUNTER_RULES.gnomePerRoom)spawnGnome(r);}}
+  const r=roomAt(player.x,player.z);if(r&&r!==currentRoom){currentRoom=r;if(!visitedRooms.has(r.id)){visitedRooms.add(r.id);runStats.rooms++;if(!isSafeFloor()&&Math.random()<ENCOUNTER_RULES.gnomePerRoom)spawnGnome(r);}}
+  if(isSafeFloor())return;
   if(residentType==='granny'&&grannyReturnT>=0){grannyReturnT=Math.max(0,grannyReturnT-dt);if(grannyReturnT===0&&!monsters.some(m=>!m.dead&&isKey(m))){const candidates=rooms.filter(q=>q.kind!=='start'&&Math.hypot(cellCX(q.x)-player.x,cellCX(q.z)-player.z)>6);const q=pick(candidates);if(q){const m=placeResident('granny',q);if(m){m.roamStarted=true;m.roamTime=rnd(7,12);m.roamElapsed=0;grannyReturnT=-1;}}}}
   threatWarning=threatLife=0;baseMonsterUpdate(dt);monsters=monsters.filter(m=>!m.dead);
 };

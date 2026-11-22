@@ -32,12 +32,13 @@ function startMusic(){
   windSrc.connect(windF); windF.connect(windG); windG.connect(master);
   windSrc.start();
 
-  schedulePad();
+  updateMusicIntensity();schedulePad();
 }
 
 function schedulePad(){
   if (!musicStarted) return;
   if(actx.state!=='running'){padTimer=setTimeout(schedulePad,2000);return;}
+  if(isSafeFloor()){padTimer=setTimeout(schedulePad,2000);return;}
   const now = actx.currentTime;
   const bases = [55, 58.27, 61.74, 65.41, 69.30, 73.42];
   const root = bases[Math.floor(Math.random()*bases.length)];
@@ -60,6 +61,6 @@ function schedulePad(){
 
 function updateMusicIntensity(){
   if (!musicStarted || !droneGain) return;
-  droneGain.gain.setTargetAtTime(0.017 + Math.min(0.03, floor*0.0035), actx.currentTime, 2);
+  droneGain.gain.setTargetAtTime(isSafeFloor()?.002:0.017 + Math.min(0.03, floor*0.0035), actx.currentTime, 2);
   if (droneFilter) droneFilter.frequency.setTargetAtTime(170 + Math.min(300, floor*22), actx.currentTime, 2);
 }

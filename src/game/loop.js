@@ -2,7 +2,7 @@
    ЦИКЛ ОБНОВЛЕНИЯ
    ========================================================== */
 function update(dt){
-  if(gameState==='playing')TIME += dt;
+  if(gameState==='playing'){TIME += dt;runStats.time+=dt;}
 
   if (msgTimer > 0){
     msgTimer -= dt;
@@ -17,7 +17,7 @@ function update(dt){
       if(scareTime<=0){clearScare();}
       else return;
     }
-    updatePlayer(dt);
+    const px=player.x,pz=player.z;updatePlayer(dt);runStats.walked+=Math.hypot(player.x-px,player.z-pz);
     if(descending){updateHUD();return;}
     updateAxe(dt);
     updateMonsters(dt);
@@ -47,7 +47,7 @@ function update(dt){
 
     // Неопознанные пространственные звуки из другой комнаты (не новый монстр).
     ambientT -= dt;
-    if (ambientT <= 0){
+    if (ambientT <= 0&&!isSafeFloor()){
       ambientT = rnd(6,14);
       const near=rooms.filter(r=>{const d=Math.hypot(cellCX(r.x)-player.x,cellCX(r.z)-player.z);return d>5&&d<23;});
       if(near.length){const r=near[Math.random()*near.length|0];anomalyVoice('unknown',cellCX(r.x),cellCX(r.z),.8);}

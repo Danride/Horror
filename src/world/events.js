@@ -29,6 +29,7 @@ function createEventChair(r){
 }
 function placeHospitalEvents(){
   disposeTree(eventGroup);clearApparition();eventChairs=[];echoSteps=[];eventTimer=rnd(8,13);blackoutT=0;blackoutRoom=null;lastEventRoom=null;lastEventKind='';eventCount=0;grannyReturnT=-1;gnomeCooldown=0;
+  if(isSafeFloor())return;
   const main=rooms.filter(r=>!r.branch&&r.kind!=='start'&&r.kind!=='exit');const side=rooms.filter(r=>r.branch);
   // Chairs are ordinary static objects until the director triggers an encounter.
   for(const r of [...main.slice(0,6),...side,...main.slice(6)]){if(eventChairs.length>=6)break;if(r.layout==='nested'||r.layout==='narrow'||zoneIndex()===3)continue;const c=createEventChair(r);if(c)eventChairs.push(c);}
@@ -73,6 +74,7 @@ function triggerHospitalEvent(r,forced=null){
   lastEventKind=kind;eventCount++;return true;
 }
 function updateHospitalEvents(dt){
+  if(isSafeFloor()){updateReception(dt);return;}
   blackoutT=Math.max(0,blackoutT-dt);gnomeCooldown=Math.max(0,gnomeCooldown-dt);
   for(const c of eventChairs)updateChair(c,dt);updateApparition(dt);
   for(let i=echoSteps.length-1;i>=0;i--){const e=echoSteps[i];e.t-=dt;if(e.t<=0){spatialStep({pos:{x:e.x,z:e.z},type:'buried'},.55);echoSteps.splice(i,1);}}
@@ -91,7 +93,7 @@ function fakeDoor(r,side){const q=wallDoorTransform(r,side),g=new THREE.Group();
   propBox(g,frame,0,1.42,0,1.88,2.84,.14);propBox(g,dark,0,1.34,-.09,1.62,2.63,.055);propBox(hinge,panel,.82,1.34,-.13,1.64,2.66,.10);propBox(hinge,frame,1.42,1.2,-.22,.13,.085,.10);
   const x=q.x-Math.sin(q.angle)*.60,z=q.z-Math.cos(q.angle)*.60;return {x,z,room:r,group:g,hinge,opened:false,t:0};}
 function activateFake(d){if(d.opened){showMsg('ЗА ДВЕРЬЮ СТЕНА.',1.5);return;}d.opened=true;d.t=0;anomalyVoice('door',d.x,d.z,.65);showMsg('ЗА ДВЕРЬЮ НИЧЕГО НЕТ.',2);if(Math.random()<.5){blackoutRoom=d.room;blackoutT=1.7;}}
-function buildExtras(){disposeTree(extrasGroup);fakeDoors=[];
+function buildExtras(){disposeTree(extrasGroup);fakeDoors=[];if(isSafeFloor())return;
   const pool=rooms.filter(r=>r.kind!=='start'&&r.kind!=='exit').sort(()=>Math.random()-.5);
   const decoys=pool.slice().sort((a,b)=>Number(b.falseExit)-Number(a.falseExit));for(const r of decoys){if(fakeDoors.length>=Math.min(4,2+Math.floor((floor-1)/5)))break;if(r.layout==='nested'||r.layout==='narrow')continue;for(const side of freeRoomSides(r)){const q=wallDoorTransform(r,side),dirX=Math.sin(q.angle),dirZ=Math.cos(q.angle),x=q.x-dirX*1.05,z=q.z-dirZ*1.05;const zone={min:{x:Math.min(x,q.x)-.98,z:Math.min(z,q.z)-.98},max:{x:Math.max(x,q.x)+.98,z:Math.max(z,q.z)+.98}};if(circleHits(x,z,.35)||furnitureColliders.some(b=>boxesOverlapXZ(b,zone))||anomalies.some(a=>Math.hypot(a.x-x,a.z-z)<1.35))continue;fakeDoors.push(fakeDoor(r,side));break;}}
 }

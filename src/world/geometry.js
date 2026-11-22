@@ -82,7 +82,9 @@ function placeLamps(){
   }
   lamps = [];
 
-  const chosen=roomCells.filter((c,i)=>i===0||Math.random()<.82);
+  const chosen=roomCells.filter((c,i)=>isSafeFloor()||i===0||Math.random()<.82);
+  if(floorType==='corridor'){for(let z=7;z<=35;z+=4)chosen.push([15,z]);}
+  if(floorType==='hall'){for(const x of [11,19])for(const z of [12,18])chosen.push([x,z]);}
   for(const [a,b] of roomLinks)if(Math.random()<.35)chosen.push([(a.x+b.x)/2,(a.z+b.z)/2]);
 
   for (const [i,j] of chosen){
@@ -218,13 +220,14 @@ function anomalyVoice(kind,x,z,level=1){
 function placeAnomalies(){
   disposeTree(anomalyGroup);for(const tex of anomalyTextures)tex.dispose();
   anomalyTextures=[];anomalies=[];anomalyDim=0;
+  if(isSafeFloor())return;
   const options=rooms.filter(r=>r.kind!=='start'&&r.kind!=='exit');
   for(let i=options.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[options[i],options[j]]=[options[j],options[i]];}
   const kinds=ANOMALY_TYPES.slice();
   for(let i=kinds.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[kinds[i],kinds[j]]=[kinds[j],kinds[i]];}
   const amount=Math.min(options.length,3+(Math.random()<.65?1:0)+(floor>3?1:0));
   for(let i=0;i<amount;i++){
-    const room=options[i],kind=kinds[i%kinds.length];room.kind=kind;
+    const room=options[i],kind=kinds[i%kinds.length];if(!['hall','corridor'].includes(floorType))room.kind=kind;
     const sx=Math.random()<.5?-1:1,sz=Math.random()<.5?-1:1;
     // Corners keep the passage through every room clear, even in the smallest room.
     const x=cellCX(room.x)+sx*(room.hx+.06)*BLOCK,z=cellCX(room.z)+sz*(room.hz+.06)*BLOCK;

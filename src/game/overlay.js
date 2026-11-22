@@ -6,7 +6,7 @@ const overlayEl = document.getElementById('overlay');
 function showOverlay(title, sub, btn, cls){
   overlayEl.innerHTML = `
     <h1 class="${cls||''}">${title}</h1>
-    <p>${sub}</p>
+    ${sub.startsWith('<div class="run-stats">')?sub:`<p>${sub}</p>`}
     <div class="btn pulse">${btn}</div>
   `;
   overlayEl.style.display = 'flex';

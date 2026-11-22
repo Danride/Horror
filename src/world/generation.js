@@ -6,6 +6,28 @@ const gidx = (i,j) => j*GW + i;
 const DIRS4 = [[1,0],[-1,0],[0,1],[0,-1]];
 const startCell=[15,3];
 let exitCell = [15,15], routeDist = new Int32Array(GW*GW), roomCells = [], rooms=[], roomLinks=[], startYaw=0, floorPatterns=[];
+const FLOOR_CHANCES=[['normal',.35],['hall',.25],['corridor',.15],['safe',.10],['yellow',.05],['mixed',.10]];
+let floorType='normal';
+function rollFloorType(roll=Math.random()){let sum=0;for(const [type,chance] of FLOOR_CHANCES){sum+=chance;if(roll<sum)return type;}return 'mixed';}
+const isSafeFloor=()=>floorType==='safe';
+function generateSpecialMaze(type){
+  grid.fill(1);rooms=[];roomCells=[];roomLinks=[];floorPatterns=[type];
+  const add=(x,z,hx,hz,layout,kind='normal',branch=false)=>{const r={id:rooms.length,x,z,hx,hz,layout,kind,branch,sequence:rooms.length+1};rooms.push(r);roomCells.push([x,z]);return r;};
+  const link=(a,b,open=false)=>roomLinks.push([a,b,open]);
+  const start=add(15,3,1,1,'room','start');let end;
+  if(type==='hall'){
+    const hall=add(15,15,6,5,'hall');end=add(15,27,2,2,'room','exit');link(start,hall);link(hall,end);
+    const left=add(4,15,2,2,'room','normal',true),right=add(26,15,2,2,'room','normal',true);link(hall,left,true);link(hall,right,true);
+  }else if(type==='corridor'){
+    const hall=add(15,21,1,14,'corridor');end=add(15,40,2,2,'room','exit');link(start,hall,true);link(hall,end,true);
+    link(hall,add(8,21,2,2,'room','normal',true));link(hall,add(22,21,2,2,'room','normal',true));
+  }else{
+    const desk=add(15,10,3,2,'hall');desk.reception=true;const rest=add(15,18,2,2,'room');end=add(15,26,2,2,'room','exit');link(start,desk);link(desk,rest);link(rest,end);link(desk,add(7,10,2,2,'room','normal',true));link(desk,add(23,10,2,2,'room','normal',true));
+  }
+  for(const r of rooms)for(let x=r.x-r.hx;x<=r.x+r.hx;x++)for(let z=r.z-r.hz;z<=r.z+r.hz;z++)grid[gidx(x,z)]=0;
+  for(const [a,b] of roomLinks){const dx=Math.sign(b.x-a.x),dz=Math.sign(b.z-a.z),length=Math.abs(b.x-a.x)+Math.abs(b.z-a.z);for(let n=0;n<=length;n++)grid[gidx(a.x+n*dx,a.z+n*dz)]=0;}
+  exitCell=[end.x,end.z];startYaw=Math.PI;routeDist=distanceField(...exitCell);
+}
 function distanceField(sx,sz){
   const out = new Int32Array(GW*GW).fill(-1), q = [gidx(sx,sz)];
   out[q[0]]=0;
@@ -20,7 +42,8 @@ function distanceField(sx,sz){
   return out;
 }
 
-function generateMaze(){
+function generateMaze(forced=null){
+  floorType=forced||rollFloorType();if(['hall','corridor','safe'].includes(floorType)){generateSpecialMaze(floorType);return;}
   grid.fill(1);
   // Compose connected modules on a coarse graph, then carve each room and passage.
   rooms=[];roomCells=[];roomLinks=[];floorPatterns=[];
@@ -33,10 +56,10 @@ function generateMaze(){
     occupied.set(r.id,r);rooms.push(r);roomCells.push([r.x,r.z]);if(!branch)spine.push(r);return r;}
   const has=(a,b)=>roomLinks.some(([x,y])=>(x===a&&y===b)||(x===b&&y===a));
   function link(a,b){if(a!==b&&!has(a,b))roomLinks.push([a,b]);}
-  const rows=sewer?3:4+(Math.random()<.55?1:0);
+  const rows=floorType==='mixed'?5:4+(Math.random()<.55?1:0);
   let cur=addRoom(2,0,false,'room');cur.kind='start';cur.hx=cur.hz=1;
   for(let row=1;row<=rows;row++){
-    const layout=sewer?'corridor':row%3===0?'hall':Math.random()<.46?'corridor':Math.random()<.28?'narrow':'room';
+    const layout=floorType==='mixed'?['hall','narrow','corridor','room','hall'][(row-1)%5]:sewer?'corridor':row%3===0?'hall':Math.random()<.46?'corridor':Math.random()<.28?'narrow':'room';
     let next=addRoom(cur.sx,row,false,layout);link(cur,next);cur=next;
     if(row<rows&&row>1&&Math.random()<(sewer?.10:.44)){const dirs=[-1,1].filter(d=>cur.sx+d>=1&&cur.sx+d<=4&&!occupied.has(key(cur.sx+d,row)));if(dirs.length){next=addRoom(cur.sx+dirs[Math.random()*dirs.length|0],row,false,'room');link(cur,next);cur=next;addPattern('corner');}}
   }

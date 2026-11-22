@@ -175,6 +175,7 @@ function updateMonsters(dt){
 function attackPlayer(m, dmg){
   if(gameState!=='playing'||scareTime>0||m.type==='gnome'||m.roamTime>0)return;
   player.hp -= dmg;
+  runStats.damage+=Math.max(0,dmg);
   hurtFlash = Math.max(hurtFlash, 0.75);
   shakeAmt = Math.max(shakeAmt, 1.0);
 

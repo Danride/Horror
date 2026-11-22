@@ -1,6 +1,8 @@
 /* ==========================================================
    ФЛОУ ИГРЫ
    ========================================================== */
+let runStats={time:0,walked:0,rooms:0,kills:0,hits:0,damage:0,cleared:0,safe:0};
+function runSummary(){const t=Math.floor(runStats.time),clock=Math.floor(t/60)+':'+String(t%60).padStart(2,'0');const rows=[['Пройдено этажей',runStats.cleared+' / 15'],['Время забега',clock],['Пройдено метров',Math.floor(runStats.walked)+' м'],['Посещено комнат',runStats.rooms],['Побеждено монстров',runStats.kills],['Попаданий топором',runStats.hits],['Получено урона',Math.round(runStats.damage)],['Безопасных этажей',runStats.safe],['Рекорд спуска',bestDistance+' м']];return '<div class="run-stats">'+rows.map(([k,v])=>'<div><span>'+k+'</span><b>'+v+'</b></div>').join('')+'</div>';}
 function descend(){
   if (descending || gameState!=='playing') return;
   descending = true;
@@ -16,11 +18,12 @@ function descend(){
 function finishDescend(){
     if(gameState!=='playing'||!descending)return;
     stopSamples();distantTimer=rnd(32,60);
-    runCompleted+=Math.max(0,routeDist[gidx(...startCell)])*BLOCK;floorProgress=0;saveDistanceRecord(runCompleted);
-    if(floor===15){gameState='won';descending=false;fadeEl.style.opacity='0';for(const k in keys)keys[k]=false;document.exitPointerLock();stopSamples();showOverlay('ВЫ ВЫБРАЛИСЬ',`15 / 15 этажей<br>Дистанция: ${Math.floor(runCompleted)} м<br>Глава завершена.`,'ИГРАТЬ СНОВА','green');return;}
+    runStats.cleared++;runCompleted+=Math.max(0,routeDist[gidx(...startCell)])*BLOCK;floorProgress=0;saveDistanceRecord(runCompleted);
+    if(floor===15){gameState='won';descending=false;fadeEl.style.opacity='0';for(const k in keys)keys[k]=false;document.exitPointerLock();stopSamples();showOverlay('ВЫ ВЫБРАЛИСЬ',runSummary(),'ИГРАТЬ СНОВА','green');return;}
     floor++;
     // Regenerate everything
     generateMaze();
+    if(isSafeFloor())runStats.safe++;
     buildMazeMesh();
     placeStairs();
     placeAnomalies();
@@ -67,6 +70,6 @@ function die(){
   // Keep the one existing ambient scheduler alive across retries.
   updateDistance();
   showOverlay('ВЫ ПОГИБЛИ',
-    `Этаж: <b style="color:#e0483a">${floor}</b><br>Дистанция: ${Math.floor(runCompleted+floorProgress)} м · Рекорд: ${bestDistance} м<br>Тьма забрала ещё одного.`,
+    runSummary(),
     'ПОПРОБОВАТЬ СНОВА', 'red');
 }

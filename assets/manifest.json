@@ -19,6 +19,7 @@
     "zombieGrowl": "audio/zombie-growl.wav",
     "zombieWhisper": "audio/zombie-whisper.wav",
     "doorOpen": "audio/door-open.wav",
-    "scaryImpact": "audio/scary-impact.wav"
+    "scaryImpact": "audio/scary-impact.wav",
+    "receptionVoice": "audio/reception-voice.mp3"
   }
 }

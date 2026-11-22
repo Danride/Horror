@@ -37,7 +37,7 @@ window.addEventListener('resize', resize);
 resize();
 
 /* ---------- свет ---------- */
-scene.add(new THREE.AmbientLight(0x1b2534, 0.85));
+const ambientLight=new THREE.AmbientLight(0x1b2534, 0.85);scene.add(ambientLight);
 
 const playerLight = new THREE.PointLight(0xffb070, 6.4, 11, 1.7);
 playerLight.position.set(0,-0.1,0.1);

@@ -14,7 +14,7 @@ const modules = [
   'render/particles', 'entities/axe', 'entities/models', 'entities/ai',
   'player/state', 'player/hud', 'player/movement', 'render/lights',
   'game/flow', 'game/overlay', 'game/input', 'game/reset', 'game/loop',
-  'world/hospital', 'world/events', 'entities/encounters',
+  'world/hospital', 'world/reception', 'world/events', 'entities/encounters',
   'world/anomalous-furniture', 'game/presentation', 'game/startup'
 ];
 
@@ -42,7 +42,7 @@ const models = Object.fromEntries(Object.entries(manifest.models).map(([key,file
 const samples = Object.fromEntries(Object.entries(manifest.audio).map(([key,filename]) => [key,fs.readFileSync(path.join(root,'assets',filename)).toString('base64')]));
 const embed = value => JSON.stringify(value).replace(/<\/script/gi,'<\\/script');
 const game = modules.map(name => `\n// ===== ${name}.js =====\n${read('src/'+name+'.js')}`).join('\n')
-  .replace('/*__MODELS__*/{}',()=>embed(models)).replace('/*__AUDIO__*/{}',()=>embed(samples));
+  .replace('/*__MODELS__*/{}',()=>embed(models)).replace('/*__AUDIO__*/{}',()=>embed(samples)).replace('/*__RECEPTION__*/{}',()=>embed(JSON.parse(read('assets/models/reception.gltf'))));
 const code = read('src/index.template.html')
   .replace('/*__CSS__*/',()=>read('src/style.css'))
   .replace('/*__ENGINE__*/',()=> '\n'+read('vendor/three.min.js'))

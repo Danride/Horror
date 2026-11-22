@@ -19,20 +19,26 @@
     transition:opacity .35s ease;pointer-events:none}
   #ui{position:fixed;inset:0;z-index:10;pointer-events:none}
 
-  #topbar{position:absolute;left:16px;top:14px;display:flex;gap:16px;align-items:flex-start}
+  #topbar{position:absolute;left:24px;bottom:28px;display:flex;flex-direction:column;gap:4px;align-items:flex-start;filter:drop-shadow(0 3px 3px #000)}
   .stat{display:flex;flex-direction:column;gap:4px}
-  .lbl{font-size:9px;letter-spacing:1.6px;color:#6f7a92}
-  .track{width:118px;height:9px;background:rgba(0,0,0,.75);border:1px solid rgba(255,255,255,.14);padding:1px}
+  .lbl{display:none}
+  .track{width:min(270px,45vw);height:12px;background:#181510;border:2px solid #a09268;padding:1px;box-shadow:0 0 0 1px #211e17}
+  .stat:nth-child(2) .track{width:min(207px,36vw);height:9px;border-color:#766d4f}
   .track i{display:block;height:100%;transition:width .1s linear}
-  #hpbar{background:linear-gradient(#e05a4a,#8d1f16);width:100%}
-  #stbar{background:linear-gradient(#7fd6ff,#2a6f8f);width:100%}
+  #hpbar{background:linear-gradient(#d64c36,#6c160d);width:100%}
+  #stbar{background:linear-gradient(#8aaa55,#435b26);width:100%}
 
   #floorbox{
     position:absolute;left:50%;top:14px;transform:translateX(-50%);
     font-size:15px;font-weight:bold;letter-spacing:3px;color:#c8d4ec;
     text-shadow:0 0 14px rgba(120,180,255,.3);text-align:center;
   }
-  #floorbox small{display:block;font-size:9px;letter-spacing:4px;color:#5d6a82;margin-top:2px;font-weight:normal}
+  #floorbox small{display:none}
+  #distancehud,#draft{display:none}
+  .safe-floor #vignette{background:radial-gradient(ellipse at center,transparent 40%,rgba(0,0,0,.35) 100%)}
+  .run-stats{display:grid;width:min(380px,85vw);gap:9px;text-align:left;margin:15px auto 25px;color:#c8d4ec;font-size:13px}
+  .run-stats div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #444a55}
+  .run-stats b{color:#fff}
 
   #cross{position:absolute;left:50%;top:50%;width:7px;height:7px;
     transform:translate(-50%,-50%);border-radius:50%;
