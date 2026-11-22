@@ -1,0 +1,44 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const fakeCanvasContext={createImageData:(w,h)=>({data:new Uint8ClampedArray(w*h*4)}),putImageData(){},fillRect(){},fillText(){},createRadialGradient(){return {addColorStop(){}}},beginPath(){},ellipse(){},fill(){},arc(){},moveTo(){},lineTo(){},closePath(){},stroke(){}};
+function node(){return {style:{},dataset:{},classList:{add(){},remove(){},toggle(){}},addEventListener(){},getContext(){return fakeCanvasContext}};}
+const nodes=new Map(),document={getElementById(id){if(!nodes.has(id))nodes.set(id,node());return nodes.get(id);},createElement:node,body:{insertBefore(){}},addEventListener(){},exitPointerLock(){}};
+const param=()=>({value:0,setValueAtTime(v,t){assert.ok(Number.isFinite(v)&&Number.isFinite(t));},linearRampToValueAtTime(v,t){assert.ok(Number.isFinite(v)&&Number.isFinite(t));},exponentialRampToValueAtTime(v,t){assert.ok(v>0&&Number.isFinite(t));},setTargetAtTime(v,t,d){assert.ok(Number.isFinite(v)&&Number.isFinite(t)&&d>0);}});
+function audioNode(){return {gain:param(),frequency:param(),Q:param(),pan:param(),threshold:param(),ratio:param(),connect(){},start(){},stop(){this.onended?.();},disconnect(){}};}
+class AudioContext{constructor(){this.state='running';this.currentTime=0;this.sampleRate=22050;this.destination=audioNode();}createGain(){return audioNode();}createDynamicsCompressor(){return audioNode();}createOscillator(){return audioNode();}createBufferSource(){return audioNode();}createBiquadFilter(){return audioNode();}createStereoPanner(){return audioNode();}createBuffer(c,n){const a=new Float32Array(n);return {getChannelData:()=>a};}decodeAudioData(bytes){assert.ok(bytes.byteLength>10000);return Promise.resolve({duration:6});}resume(){this.state='running';}suspend(){this.state='suspended';}}
+const store=new Map(),localStorage={getItem:k=>store.get(k)??null,setItem:(k,v)=>store.set(k,v)};
+const context=vm.createContext({console,document,window:{innerWidth:960,innerHeight:540,addEventListener(){},AudioContext},localStorage,performance,atob,requestAnimationFrame(){},setTimeout(){return 1;},clearTimeout(){}});
+vm.runInContext(`{let seed=${Number(process.env.TEST_SEED)||20261122};Math.random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296;};}`,context);
+vm.runInContext(fs.readFileSync(path.join(root,'vendor/three.min.js'),'utf8'),context);
+context.THREE={...context.THREE};
+context.THREE.TextureLoader=class{load(){return new context.THREE.Texture();}};
+context.THREE.WebGLRenderer=class{constructor(){this.domElement=node();this.info={render:{calls:0},memory:{}};}setClearColor(){}setSize(){}render(s,c){s.updateMatrixWorld();c.updateMatrixWorld();}clearDepth(){}};
+const raw=fs.readFileSync(path.join(root,'index.html'),'utf8'),script=raw.split('<script type="module">')[1].split('</script>')[0];
+vm.runInContext(script,context,{filename:'game.js'});
+const run=s=>vm.runInContext(s,context);
+
+(async()=>{
+  await run('(initAudio(),samplesReady)');assert.equal(run('audioBuffers.size'),9);
+  const stats=run(`(()=>{let counts=[0,0,0,0,0],modes={},keys={},max=0;for(let i=0;i<90;i++){
+    floor=i%15+1;generateMaze();const fromStart=distanceField(...startCell);if(grid.some((v,j)=>v===0&&fromStart[j]<0)||fromStart[gidx(...exitCell)]<0)throw Error('Disconnected maze');
+    if(zoneIndex()!==0)throw Error('Not hospital');
+    buildMazeMesh();placeStairs();placeAnomalies();for(const m of monsters)removeMonsterQuietly(m);monsters=[];spawnFloorMonsters();
+    const key=monsters.filter(isKey),regular=monsters.filter(m=>m.role==='regular');if(key.length!==1||regular.length>4||key.length+regular.length!==monsters.length)throw Error('Wrong enemy count');
+    if(hospitalTextures.length!==0)throw Error('Door labels');counts[regular.length]++;keys[key[0].type]=(keys[key[0].type]||0)+1;max=Math.max(max,rooms.length);
+    for(const m of regular)modes[m.type+':'+m.mode]=(modes[m.type+':'+m.mode]||0)+1;
+  }return {counts,modes,keys,max};})()`);
+  console.log('90 floors:',stats);assert.ok(stats.counts.every(n=>n>0));assert.ok(stats.keys.granny&&stats.keys.multi);
+  assert.deepEqual(Array.from(run('[zombieMode(.1),zombieMode(.3),zombieMode(.5),zombieMode(.9)]')),['door','locker','wander','buried']);
+  const gnome=run(`(()=>{resetGame();gameState='playing';for(const m of monsters)removeMonsterQuietly(m);monsters=[];const r=rooms.find(q=>q.kind==='normal'),s=rooms.find(q=>q!==r&&q.kind==='normal');const rng=Math.random;Math.random=()=>.04;try{player.x=cellCX(r.x);player.z=cellCX(r.z);updateMonsters(.02);const once=monsters.filter(m=>m.type==='gnome').length;player.x=cellCX(s.x);player.z=cellCX(s.z);Math.random=()=>.99;updateMonsters(.02);player.x=cellCX(r.x);player.z=cellCX(r.z);Math.random=()=>.04;updateMonsters(.02);return {once,after:monsters.filter(m=>m.type==='gnome').length,visited:visitedRooms.size};}finally{Math.random=rng;}})()`);
+  console.log('Gnome:',gnome);assert.equal(gnome.once,1);assert.equal(gnome.after,1);
+  const door=run(`(()=>{resetGame();gameState='playing';for(const m of monsters)removeMonsterQuietly(m);monsters=[];for(const l of lockers)l.occupied=false;for(const d of doors){d.zombie=null;d.open=false;d.amount=0;}const m=spawnRegular('door'),d=m.door;player.x=d.x-(d.axis==='x'?1.5:0);player.z=d.z-(d.axis==='z'?1.5:0);d.open=true;onPlayerOpenDoor(d);d.amount=1;for(let i=0;i<14;i++)updateZombie(m,.05);const fled=m.mode==='flee',cry=sampleVoices.some(v=>v.owner===m&&v.kind==='zombieCry');for(let i=0;i<1000&&m.mode==='flee';i++)updateMonsters(.05);const hid=m.mode==='hidden',closed=!d.open;const p=m.locker?lockerFront(m.locker):m.pos;let found=false;for(const [dx,dz] of [[1.2,0],[-1.2,0],[0,1.2],[0,-1.2]]){const x=p.x+dx,z=p.z+dz;if(!circleHits(x,z,PLAYER_R)&&!furnitureHit(x,z)&&hasLOS(x,z,p.x,p.z)&&!closedDoorBetween(x,z,p.x,p.z)){player.x=x;player.z=z;yaw=Math.atan2(dx,dz);found=true;break;}}if(found)updateZombie(m,.05);const emerge=m.mode==='emerge';for(let i=0;i<12;i++)updateZombie(m,.05);return {fled,cry,hid,closed,found,emerge,attack:m.mode==='attack'};})()`);
+  console.log('Door zombie:',door);assert.ok(door.fled&&door.cry&&door.hid&&door.closed&&door.found&&door.emerge&&door.attack);
+  const locker=run(`(()=>{resetGame();gameState='playing';for(const m of monsters)removeMonsterQuietly(m);monsters=[];for(const l of lockers)l.occupied=false;const m=spawnRegular('locker');if(!m.locker)throw Error('No available locker');const l=m.locker,p=lockerFront(l);player.x=p.x;player.z=p.z;updateZombie(m,.02);const opened=l.target===1,startsInside=m.concealed;for(let i=0;i<13;i++)updateZombie(m,.05);return {opened,startsInside,concealed:m.concealed,attack:m.mode==='attack',positionFree:!circleHits(m.pos.x,m.pos.z,.25)};})()`);
+  console.log('Locker zombie:',locker);assert.ok(locker.opened&&locker.startsInside&&!locker.concealed&&locker.attack&&locker.positionFree);
+  const multi=run(`(()=>{resetGame();gameState='playing';for(const m of monsters)removeMonsterQuietly(m);monsters=[];const r=rooms.find(q=>q.kind==='normal'&&q.hx>=1&&q.hz>=1),m=placeResident('multi',r);const rig=m.mesh.userData.rig,ratio=rig.model.scale.y/rig.asset.scale;let found=false;for(let i=0;i<16;i++){const a=i*Math.PI/8,x=m.pos.x+3.4*Math.cos(a),z=m.pos.z+3.4*Math.sin(a);if(!circleHits(x,z,.25)&&hasLOS(x,z,m.pos.x,m.pos.z)&&!closedDoorBetween(x,z,m.pos.x,m.pos.z)){player.x=x;player.z=z;found=true;break;}}if(!found){player.x=m.pos.x;player.z=m.pos.z;}updateEnemy(m,.02);const started=m.ceilingState==='laugh';for(let i=0;i<35;i++)updateEnemy(m,.05);return {ratio,started,ground:m.ceilingState==='ground',detect:m.cfg.detect,scaleRestored:rig.model.scale.y===rig.asset.scale};})()`);
+  console.log('Multi:',multi);assert.ok(multi.ratio<.30&&multi.started&&multi.ground&&multi.detect===17&&multi.scaleRestored);
+  const cabinet=run(`(()=>{resetGame();gameState='playing';const c=eventCabinets[0],start=c.mesh.position.clone();if(c.legs)throw Error('Extra limbs');startCabinet(c);for(let i=0;i<120;i++)updateCabinet(c,.02);return {distance:c.mesh.position.distanceTo(start),tilt:c.body.rotation.x};})()`);
+  console.log('Cabinet:',cabinet);assert.ok(cabinet.distance>.1&&cabinet.tilt>1.3);
+  assert.ok(!script.includes('function makeTrap')&&!script.includes('function hospitalLabel'));
+  console.log('All smoke checks passed. Rendering and audio output are mocked.');
+})().catch(e=>{console.error(e);process.exitCode=1;});

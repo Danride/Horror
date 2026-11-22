@@ -1,0 +1,3572 @@
+{
+  "meta": {
+    "format_version": "5.0",
+    "model_format": "free",
+    "box_uv": false
+  },
+  "name": "Cubical Firefighter Axe - Voxel",
+  "resolution": {
+    "width": 256,
+    "height": 128
+  },
+  "elements": [
+    {
+      "name": "Red fiberglass main shaft",
+      "type": "cube",
+      "uuid": "744f6c77-4fb2-4d16-932b-f824bdd768e9",
+      "from": [
+        -0.77,
+        0.88,
+        -0.74
+      ],
+      "to": [
+        0.77,
+        31.1,
+        0.74
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 0,
+      "faces": {
+        "north": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            129,
+            33,
+            159,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Shaft red edge highlight",
+      "type": "cube",
+      "uuid": "b78fc269-37d7-46c7-a5f0-eaf8bae8aa09",
+      "from": [
+        -0.76,
+        11.3,
+        0.72
+      ],
+      "to": [
+        -0.6,
+        23.3,
+        0.79
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 1,
+      "faces": {
+        "north": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Shaft red dark stripe",
+      "type": "cube",
+      "uuid": "b5a0edf8-2675-4781-87df-22f772f2fa8f",
+      "from": [
+        0.6,
+        13.2,
+        0.72
+      ],
+      "to": [
+        0.75,
+        22.2,
+        0.79
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 2,
+      "faces": {
+        "north": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Red head socket exposed peg",
+      "type": "cube",
+      "uuid": "aa825cb5-67b9-4344-9700-da8d2851869d",
+      "from": [
+        -0.66,
+        29.75,
+        -0.65
+      ],
+      "to": [
+        0.66,
+        31.35,
+        0.65
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 3,
+      "faces": {
+        "north": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            161,
+            33,
+            191,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Ergonomic rectangular rubber grip",
+      "type": "cube",
+      "uuid": "01a56884-020a-4e0d-a7c7-5c24d35ec6a4",
+      "from": [
+        -0.94,
+        1.48,
+        -0.92
+      ],
+      "to": [
+        0.94,
+        10.0,
+        0.92
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 4,
+      "faces": {
+        "north": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 01",
+      "type": "cube",
+      "uuid": "5d889770-84f2-46fd-9520-8c68f87e1b43",
+      "from": [
+        -1.06,
+        2.2,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        2.54,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 5,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 02",
+      "type": "cube",
+      "uuid": "22af8867-b2bf-4a20-a3c9-16ae4335d256",
+      "from": [
+        -1.06,
+        3.1300000000000003,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        3.47,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 6,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 03",
+      "type": "cube",
+      "uuid": "4cddfa83-6258-4b8a-9ea7-f2a93c2f34c5",
+      "from": [
+        -1.06,
+        4.0600000000000005,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        4.4,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 7,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 04",
+      "type": "cube",
+      "uuid": "b08c75e5-8722-484a-8114-2dc1ebe67932",
+      "from": [
+        -1.06,
+        4.99,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        5.33,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 0,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 05",
+      "type": "cube",
+      "uuid": "1210b929-4027-4ec2-b31a-a7a3ec9c6214",
+      "from": [
+        -1.06,
+        5.92,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        6.26,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 1,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 06",
+      "type": "cube",
+      "uuid": "5290ca09-9b6b-4ef1-97bb-7ca65d4e469b",
+      "from": [
+        -1.06,
+        6.8500000000000005,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        7.19,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 2,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 07",
+      "type": "cube",
+      "uuid": "122480c2-4856-496f-b27b-65de655ac1b8",
+      "from": [
+        -1.06,
+        7.78,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        8.120000000000001,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 3,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rubber grip raised ridge 08",
+      "type": "cube",
+      "uuid": "4c57fa09-4ff9-4312-990d-5c0d162c0181",
+      "from": [
+        -1.06,
+        8.71,
+        -1.01
+      ],
+      "to": [
+        1.06,
+        9.05,
+        1.01
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 4,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Squared rubber bottom cap",
+      "type": "cube",
+      "uuid": "abfdbd4a-563c-4da1-be61-7f8b6ee146d4",
+      "from": [
+        -1.17,
+        0.38,
+        -1.13
+      ],
+      "to": [
+        1.17,
+        1.87,
+        1.13
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 5,
+      "faces": {
+        "north": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            225,
+            33,
+            255,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Bottom cap red plug",
+      "type": "cube",
+      "uuid": "29156f03-eed4-44c9-a9d6-ad4801e2e88a",
+      "from": [
+        -0.52,
+        0.1,
+        -0.51
+      ],
+      "to": [
+        0.52,
+        0.5,
+        0.51
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 6,
+      "faces": {
+        "north": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Upper grip retaining ring",
+      "type": "cube",
+      "uuid": "57fa067a-458e-4f18-ab3d-1d570fc547ec",
+      "from": [
+        -1.07,
+        9.79,
+        -1.04
+      ],
+      "to": [
+        1.07,
+        10.64,
+        1.04
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 7,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            1,
+            65,
+            31,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            97,
+            97,
+            127,
+            127
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Safety reflective yellow band",
+      "type": "cube",
+      "uuid": "ae3102db-7eeb-4f4e-9263-ef508dcef0e6",
+      "from": [
+        -0.91,
+        11.61,
+        -0.91
+      ],
+      "to": [
+        0.91,
+        12.37,
+        0.91
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 0,
+      "faces": {
+        "north": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Second safety reflective ring",
+      "type": "cube",
+      "uuid": "77d2562c-84aa-4da4-b941-7b72711e1111",
+      "from": [
+        -0.85,
+        12.38,
+        -0.85
+      ],
+      "to": [
+        0.85,
+        12.56,
+        0.85
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 1,
+      "faces": {
+        "north": {
+          "uv": [
+            33,
+            97,
+            63,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            33,
+            97,
+            63,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            33,
+            97,
+            63,
+            127
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            33,
+            97,
+            63,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            33,
+            97,
+            63,
+            127
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            33,
+            97,
+            63,
+            127
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Yellow shaft service badge",
+      "type": "cube",
+      "uuid": "57461a65-1b61-40c2-ac94-993a414a0411",
+      "from": [
+        -0.44,
+        17.78,
+        0.74
+      ],
+      "to": [
+        0.48,
+        19.24,
+        0.82
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 2,
+      "faces": {
+        "north": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            33,
+            65,
+            63,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Small white badge stripe",
+      "type": "cube",
+      "uuid": "a0c591bc-5700-473e-bf9a-a9e1e8c3c663",
+      "from": [
+        -0.31,
+        18.75,
+        0.82
+      ],
+      "to": [
+        0.34,
+        18.95,
+        0.89
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 3,
+      "faces": {
+        "north": {
+          "uv": [
+            1,
+            97,
+            31,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            1,
+            97,
+            31,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            1,
+            97,
+            31,
+            127
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            1,
+            97,
+            31,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            1,
+            97,
+            31,
+            127
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            1,
+            97,
+            31,
+            127
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Head socket lower iron ferrule",
+      "type": "cube",
+      "uuid": "24ee9deb-c73d-4997-be83-59a23c9a1ae6",
+      "from": [
+        -1.02,
+        22.8,
+        -1.0
+      ],
+      "to": [
+        1.02,
+        23.69,
+        1.0
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 4,
+      "faces": {
+        "north": {
+          "uv": [
+            129,
+            97,
+            159,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            129,
+            97,
+            159,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            129,
+            97,
+            159,
+            127
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            129,
+            97,
+            159,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            129,
+            97,
+            159,
+            127
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Blade connecting neck",
+      "type": "cube",
+      "uuid": "a84c64d4-ad9e-4c27-bacb-5d6c8c593b28",
+      "from": [
+        -3.18,
+        24.72,
+        -1.02
+      ],
+      "to": [
+        -1.51,
+        27.73,
+        1.02
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 5,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Blade deep shoulder",
+      "type": "cube",
+      "uuid": "5381ac14-69df-4be1-8dc1-a0fad254806f",
+      "from": [
+        -4.37,
+        23.78,
+        -0.94
+      ],
+      "to": [
+        -3.16,
+        28.69,
+        0.94
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 6,
+      "faces": {
+        "north": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Broad steel bit body",
+      "type": "cube",
+      "uuid": "88c673a2-607e-4621-ba98-d8a88d456cc3",
+      "from": [
+        -5.74,
+        22.48,
+        -0.81
+      ],
+      "to": [
+        -4.36,
+        29.92,
+        0.81
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 7,
+      "faces": {
+        "north": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Blade hardened bevel",
+      "type": "cube",
+      "uuid": "93f2edc3-6d58-4c1a-9506-b57a182b2cee",
+      "from": [
+        -6.87,
+        21.47,
+        -0.57
+      ],
+      "to": [
+        -5.73,
+        30.61,
+        0.57
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 0,
+      "faces": {
+        "north": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Bright stepped blade",
+      "type": "cube",
+      "uuid": "f62756cc-21c5-490f-9497-8b70f90bb240",
+      "from": [
+        -7.42,
+        20.94,
+        -0.28
+      ],
+      "to": [
+        -6.86,
+        31.23,
+        0.28
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 1,
+      "faces": {
+        "north": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Raised steel upper bevel",
+      "type": "cube",
+      "uuid": "59b2e7b6-9536-4e6b-a378-4c6331818bac",
+      "from": [
+        -5.79,
+        29.65,
+        0.81
+      ],
+      "to": [
+        -4.51,
+        29.84,
+        0.91
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 2,
+      "faces": {
+        "north": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Raised steel lower bevel",
+      "type": "cube",
+      "uuid": "aeaab217-8540-4c35-bac1-76b3330b9220",
+      "from": [
+        -5.79,
+        22.54,
+        0.81
+      ],
+      "to": [
+        -4.51,
+        22.76,
+        0.91
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 3,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Rescue forged head socket",
+      "type": "cube",
+      "uuid": "b4fa2567-9eb6-4fa0-a33b-362fb3207705",
+      "from": [
+        -1.61,
+        23.58,
+        -1.45
+      ],
+      "to": [
+        1.82,
+        28.53,
+        1.45
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 4,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Head front red painted plate",
+      "type": "cube",
+      "uuid": "a6332458-d82a-4b4b-ba75-67533e905762",
+      "from": [
+        -1.38,
+        24.15,
+        1.45
+      ],
+      "to": [
+        1.49,
+        28.15,
+        1.61
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 5,
+      "faces": {
+        "north": {
+          "uv": [
+            193,
+            65,
+            223,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            193,
+            65,
+            223,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            129,
+            33,
+            159,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            193,
+            65,
+            223,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            193,
+            65,
+            223,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            193,
+            65,
+            223,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Head rear red painted plate",
+      "type": "cube",
+      "uuid": "49aa756a-acbe-44c6-bc7c-0b3ecd67c61d",
+      "from": [
+        -1.38,
+        24.15,
+        -1.61
+      ],
+      "to": [
+        1.49,
+        28.15,
+        -1.45
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 6,
+      "faces": {
+        "north": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            193,
+            33,
+            223,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Cubic head front retaining pin",
+      "type": "cube",
+      "uuid": "5ffb4f5c-b84e-49f5-aef9-f16090c47e12",
+      "from": [
+        -0.14,
+        25.28,
+        1.61
+      ],
+      "to": [
+        0.58,
+        26.01,
+        1.86
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 7,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Cubic head rear retaining pin",
+      "type": "cube",
+      "uuid": "843edc3b-ada1-42ad-98ee-64946954093d",
+      "from": [
+        -0.14,
+        25.28,
+        -1.85
+      ],
+      "to": [
+        0.58,
+        26.01,
+        -1.61
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 0,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            97,
+            33,
+            127,
+            63
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Pick base solid metal",
+      "type": "cube",
+      "uuid": "adb86c6b-6caf-4f80-923b-f62d62a6b499",
+      "from": [
+        1.78,
+        24.6,
+        -1.04
+      ],
+      "to": [
+        3.03,
+        27.64,
+        1.04
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 1,
+      "faces": {
+        "north": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            97,
+            65,
+            127,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Pick intermediate step",
+      "type": "cube",
+      "uuid": "da2f8819-d3b7-410b-b758-95249a9be363",
+      "from": [
+        3.02,
+        25.09,
+        -0.78
+      ],
+      "to": [
+        4.19,
+        27.11,
+        0.78
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 2,
+      "faces": {
+        "north": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Pick tapered step",
+      "type": "cube",
+      "uuid": "0b47cbd9-65fa-4998-8835-348cad0ce068",
+      "from": [
+        4.18,
+        25.54,
+        -0.54
+      ],
+      "to": [
+        5.37,
+        26.71,
+        0.54
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 3,
+      "faces": {
+        "north": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            65,
+            65,
+            95,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Pointed squared rescue tip",
+      "type": "cube",
+      "uuid": "217e6cae-b198-4b25-9745-c1fe602fc451",
+      "from": [
+        5.36,
+        25.88,
+        -0.29
+      ],
+      "to": [
+        6.76,
+        26.38,
+        0.29
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 4,
+      "faces": {
+        "north": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            129,
+            65,
+            159,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Pick tip metallic highlight",
+      "type": "cube",
+      "uuid": "ab94758e-7cdc-4517-8806-5b6b19f21e20",
+      "from": [
+        6.37,
+        26.24,
+        -0.23
+      ],
+      "to": [
+        6.73,
+        26.39,
+        0.23
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 5,
+      "faces": {
+        "north": {
+          "uv": [
+            225,
+            97,
+            255,
+            127
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            225,
+            97,
+            255,
+            127
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            225,
+            97,
+            255,
+            127
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            225,
+            97,
+            255,
+            127
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            225,
+            97,
+            255,
+            127
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            225,
+            97,
+            255,
+            127
+          ],
+          "texture": 0
+        }
+      }
+    },
+    {
+      "name": "Socket top silver locking strip",
+      "type": "cube",
+      "uuid": "7aa7e8ad-9868-4605-8c4f-6cb716ffde05",
+      "from": [
+        -1.37,
+        28.53,
+        -1.06
+      ],
+      "to": [
+        1.5,
+        28.71,
+        1.06
+      ],
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "autouv": 0,
+      "rescale": false,
+      "locked": false,
+      "visibility": true,
+      "export": true,
+      "color": 6,
+      "faces": {
+        "north": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "east": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "south": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "west": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "up": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        },
+        "down": {
+          "uv": [
+            161,
+            65,
+            191,
+            95
+          ],
+          "texture": 0
+        }
+      }
+    }
+  ],
+  "outliner": [
+    {
+      "name": "01 | Red fire axe shaft",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "color": 0,
+      "uuid": "9f3ca81a-4e94-4582-8179-5f16529bdcb7",
+      "export": true,
+      "isOpen": true,
+      "locked": false,
+      "visibility": true,
+      "children": [
+        "744f6c77-4fb2-4d16-932b-f824bdd768e9",
+        "b78fc269-37d7-46c7-a5f0-eaf8bae8aa09",
+        "b5a0edf8-2675-4781-87df-22f772f2fa8f",
+        "aa825cb5-67b9-4344-9700-da8d2851869d"
+      ]
+    },
+    {
+      "name": "02 | Black rubber grip",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "color": 1,
+      "uuid": "43ca28a5-9ebf-4181-9232-14c53a006dd8",
+      "export": true,
+      "isOpen": true,
+      "locked": false,
+      "visibility": true,
+      "children": [
+        "01a56884-020a-4e0d-a7c7-5c24d35ec6a4",
+        "5d889770-84f2-46fd-9520-8c68f87e1b43",
+        "22af8867-b2bf-4a20-a3c9-16ae4335d256",
+        "4cddfa83-6258-4b8a-9ea7-f2a93c2f34c5",
+        "b08c75e5-8722-484a-8114-2dc1ebe67932",
+        "1210b929-4027-4ec2-b31a-a7a3ec9c6214",
+        "5290ca09-9b6b-4ef1-97bb-7ca65d4e469b",
+        "122480c2-4856-496f-b27b-65de655ac1b8",
+        "4c57fa09-4ff9-4312-990d-5c0d162c0181",
+        "abfdbd4a-563c-4da1-be61-7f8b6ee146d4",
+        "57fa067a-458e-4f18-ab3d-1d570fc547ec"
+      ]
+    },
+    {
+      "name": "03 | Steel cutting edge",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "color": 2,
+      "uuid": "e7f6a9a2-75c4-4a72-8ed9-b08b702bd8c4",
+      "export": true,
+      "isOpen": true,
+      "locked": false,
+      "visibility": true,
+      "children": [
+        "a84c64d4-ad9e-4c27-bacb-5d6c8c593b28",
+        "5381ac14-69df-4be1-8dc1-a0fad254806f",
+        "88c673a2-607e-4621-ba98-d8a88d456cc3",
+        "93f2edc3-6d58-4c1a-9506-b57a182b2cee",
+        "f62756cc-21c5-490f-9497-8b70f90bb240",
+        "59b2e7b6-9536-4e6b-a378-4c6331818bac",
+        "aeaab217-8540-4c35-bac1-76b3330b9220",
+        "b4fa2567-9eb6-4fa0-a33b-362fb3207705"
+      ]
+    },
+    {
+      "name": "04 | Cubic rescue pick",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "color": 3,
+      "uuid": "fe2f9b49-8972-41f7-886b-b5912c2613c0",
+      "export": true,
+      "isOpen": true,
+      "locked": false,
+      "visibility": true,
+      "children": [
+        "adb86c6b-6caf-4f80-923b-f62d62a6b499",
+        "da2f8819-d3b7-410b-b758-95249a9be363",
+        "0b47cbd9-65fa-4998-8835-348cad0ce068",
+        "217e6cae-b198-4b25-9745-c1fe602fc451",
+        "ab94758e-7cdc-4517-8806-5b6b19f21e20"
+      ]
+    },
+    {
+      "name": "05 | Rescue markings and fittings",
+      "origin": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "color": 4,
+      "uuid": "c1def670-a7ae-4d40-ac81-44b8fb4edd46",
+      "export": true,
+      "isOpen": true,
+      "locked": false,
+      "visibility": true,
+      "children": [
+        "29156f03-eed4-44c9-a9d6-ad4801e2e88a",
+        "ae3102db-7eeb-4f4e-9263-ef508dcef0e6",
+        "77d2562c-84aa-4da4-b941-7b72711e1111",
+        "57461a65-1b61-40c2-ac94-993a414a0411",
+        "a0c591bc-5700-473e-bf9a-a9e1e8c3c663",
+        "24ee9deb-c73d-4997-be83-59a23c9a1ae6",
+        "a6332458-d82a-4b4b-ba75-67533e905762",
+        "49aa756a-acbe-44c6-bc7c-0b3ecd67c61d",
+        "5ffb4f5c-b84e-49f5-aef9-f16090c47e12",
+        "843edc3b-ada1-42ad-98ee-64946954093d",
+        "7aa7e8ad-9868-4605-8c4f-6cb716ffde05"
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "name": "cubic_axes_texture_atlas.png",
+      "id": "0",
+      "uuid": "2b36d218-80e1-4f2d-9217-739e3d251808",
+      "width": 256,
+      "height": 128,
+      "uv_width": 256,
+      "uv_height": 128,
+      "particle": false,
+      "render_mode": "default",
+      "render_sides": "auto",
+      "internal": true,
+      "source": "data:image/png;base64,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",
+      "mode": "bitmap",
+      "saved": true,
+      "visible": true
+    }
+  ]
+}

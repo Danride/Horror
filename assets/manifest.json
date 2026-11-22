@@ -1,0 +1,22 @@
+{
+  "models": {
+    "granny": "models/granny.bbmodel",
+    "buried": "models/buried.bbmodel",
+    "gnome": "models/gnome.bbmodel",
+    "multi": "models/multi.bbmodel",
+    "axe": "models/axe.bbmodel",
+    "patient": "models/patient.bbmodel",
+    "orderly": "models/orderly.bbmodel"
+  },
+  "audio": {
+    "distant": "audio/distant.mp3",
+    "laugh": "audio/granny-laugh.mp3",
+    "scream": "audio/granny-scream.mp3",
+    "gnome": "audio/gnome.mp3",
+    "multiLaugh": "audio/multi-laugh.wav",
+    "multiRoar": "audio/multi-roar.wav",
+    "zombieCry": "audio/zombie-cry.wav",
+    "zombieGrowl": "audio/zombie-growl.wav",
+    "zombieWhisper": "audio/zombie-whisper.wav"
+  }
+}
