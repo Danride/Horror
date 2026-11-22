@@ -9,6 +9,7 @@ function triggerScreamer(type='granny'){
   scareMesh = makeCreature(type);
   scareScene.add(scareMesh);
   scareDuration=type==='granny'?1.05:1.15;scareTime = scareDuration; scareCooldown = 24;
+  playSample('scaryImpact',{x:player.x,z:player.z},.65);
   noise(.68,.22,1350,.75); noise(.28,.16,320,1.2);
   tone(116,.65,'sawtooth',.095,52);
   tone(710,.46,'triangle',.13,180); tone(943,.35,'sawtooth',.065,270);

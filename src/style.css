@@ -66,11 +66,17 @@
     color:#05070c;background:#c8d4ec;font-weight:bold;
     box-shadow:0 0 26px rgba(160,200,255,.28)}
   #overlay .btn.pulse{animation:pulse 1.5s ease-in-out infinite}
-  #overlay.white{background:#f4f3ef;color:#12151a;cursor:default}
+  #overlay.white{background:#fff;color:#12151a;cursor:default}
   #overlay.white h1{color:#14171b;text-shadow:none;font-size:clamp(38px,10vw,108px);letter-spacing:.06em;line-height:.9;margin:15px 0 24px}
   #overlay.white p{color:#555957;max-width:570px;font-size:13px;line-height:1.8}
   #overlay.white .kicker{font-size:10px;letter-spacing:5px;color:#777b77;text-transform:uppercase}
   #overlay.white .menu-rule{width:50px;height:3px;background:#a02d2d;margin:12px 0 18px}
-  #overlay.white .btn{background:#181b1b;color:#fff;box-shadow:none;border:1px solid #181b1b;margin-top:22px;cursor:pointer;padding:15px 52px;letter-spacing:4px}
+  #overlay.white .menu-buttons{display:grid;gap:16px;width:min(320px,82vw);margin:22px 0}
+  #overlay.white .btn{font: bold 14px/1.4 ui-monospace,"Courier New",monospace;background:#181b1b;color:#fff;border:0;box-shadow:4px 4px 0 #999;cursor:pointer;padding:17px 12px;letter-spacing:3px;clip-path:polygon(0 5px,5px 5px,5px 0,calc(100% - 5px) 0,calc(100% - 5px) 5px,100% 5px,100% calc(100% - 5px),calc(100% - 5px) calc(100% - 5px),calc(100% - 5px) 100%,5px 100%,5px calc(100% - 5px),0 calc(100% - 5px))}
+  #overlay.white .btn.secondary{background:#dedede;color:#171717}
+  #overlay.white .btn:hover{background:#a02d2d;color:#fff}
+  #overlay.white .btn:active{transform:translate(2px,2px)}
+  #overlay.white .shop-title{font-size:clamp(30px,8vw,60px)}
+  #overlay.white .menu-controls{font-size:10px;color:#929292;letter-spacing:2px}
   #overlay.white .menu-foot{position:absolute;bottom:20px;color:#898d88;font-size:10px;letter-spacing:3px}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}

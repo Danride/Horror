@@ -1,7 +1,7 @@
 const standardChair=createEventChair;createEventChair=function(r){const c=standardChair(r);if(c)c.haunted=Math.random()<.10;return c;};
 function startChairScare(c){
   if(scareTime>0||gameState!=='playing')return false;
-  clearScare();scareMesh=c.mesh.clone(true);scareMesh.position.set(0,0,0);scareMesh.scale.setScalar(1.25);scareScene.add(scareMesh);scareDuration=scareTime=.78;scareCooldown=18;noise(.56,.26,1100,1);tone(175,.36,'sawtooth',.12,48);shakeAmt=.8;return true;
+  clearScare();scareMesh=c.mesh.clone(true);scareMesh.position.set(0,0,0);scareMesh.scale.setScalar(1.25);scareScene.add(scareMesh);scareDuration=scareTime=.78;scareCooldown=18;playSample('scaryImpact',{x:player.x,z:player.z},.65);noise(.56,.26,1100,1);tone(175,.36,'sawtooth',.12,48);shakeAmt=.8;return true;
 }
 function removePropCollider(c){const i=furnitureColliders.indexOf(c.collider);if(i>=0)furnitureColliders.splice(i,1);}
 const previousChairUpdate=updateChair;updateChair=function(c,dt){

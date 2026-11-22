@@ -17,6 +17,8 @@
     "multiRoar": "audio/multi-roar.wav",
     "zombieCry": "audio/zombie-cry.wav",
     "zombieGrowl": "audio/zombie-growl.wav",
-    "zombieWhisper": "audio/zombie-whisper.wav"
+    "zombieWhisper": "audio/zombie-whisper.wav",
+    "doorOpen": "audio/door-open.wav",
+    "scaryImpact": "audio/scary-impact.wav"
   }
 }

@@ -18,7 +18,9 @@ vm.runInContext(script,context,{filename:'game.js'});
 const run=s=>vm.runInContext(s,context);
 
 (async()=>{
-  await run('(initAudio(),samplesReady)');assert.equal(run('audioBuffers.size'),9);
+  await run('(initAudio(),samplesReady)');assert.equal(run('audioBuffers.size'),11);
+  assert.ok(run(`(()=>{yaw=0;return mummyRearSector({pos:{x:player.x,z:player.z+2}})&&!mummyRearSector({pos:{x:player.x,z:player.z-2}});})()`));
+  assert.ok(run(`(()=>{showShop();applyAxeSkin('graphite');const ok=axeSkin==='graphite';applyAxeSkin('original');showStartScreen();return ok&&overlayEl.innerHTML.includes('НАЧАТЬ ЗАБЕГ')&&overlayEl.innerHTML.includes('МАГАЗИН');})()`));
   const stats=run(`(()=>{let counts=[0,0,0,0,0],modes={},keys={},max=0;for(let i=0;i<90;i++){
     floor=i%15+1;generateMaze();const fromStart=distanceField(...startCell);if(grid.some((v,j)=>v===0&&fromStart[j]<0)||fromStart[gidx(...exitCell)]<0)throw Error('Disconnected maze');
     if(zoneIndex()!==0)throw Error('Not hospital');

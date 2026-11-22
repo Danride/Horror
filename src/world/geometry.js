@@ -172,6 +172,7 @@ function staticTexture(){
   redraw();anomalyTextures.push(tex);return {tex,redraw};
 }
 function anomalyVoice(kind,x,z,level=1){
+  if(kind==='door'&&audioBuffers.has('doorOpen')){playSample('doorOpen',{x,z},level*.72);return;}
   if(!actx||actx.state!=='running'||!master)return;
   const dx=x-player.x,dz=z-player.z,dist=Math.hypot(dx,dz);if(dist>24)return;
   const audible=hasLOS(player.x,player.z,x,z), gain=(1-dist/25)**1.35*(audible?1:.32)*level;

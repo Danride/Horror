@@ -9,7 +9,12 @@ function requestLock(){
 }
 document.addEventListener('pointerlockerror',()=>{if(gameState!=='playing')showOverlay('НУЖЕН ЗАХВАТ МЫШИ','Разрешите захват курсора в браузере.','ПОВТОРИТЬ');});
 
-overlayEl.addEventListener('click', ()=>{
+overlayEl.addEventListener('click', (e)=>{
+  const action=e.target.closest?.('[data-menu]')?.dataset.menu;
+  if(action==='shop'){showShop();return;}
+  if(action==='back'){showStartScreen();return;}
+  if(action==='axe'){applyAxeSkin(e.target.closest('[data-menu]').dataset.skin);showShop();return;}
+  if(overlayEl.classList.contains('white')&&action!=='start')return;
   initAudio(); resumeAudio();
   if (!musicStarted) startMusic();
   if (gameState === 'dead'||gameState==='won') resetGame();

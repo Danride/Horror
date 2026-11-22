@@ -189,7 +189,7 @@ const ENEMY_CONFIG={
 };
 function makeMonster(type,pos){
   if(!pos)return null;
-  const mesh=makeCreature(type),base=ENEMY_CONFIG[type],d=Math.max(0,floor-1),cfg=type==='gnome'?{...base,run:Math.min(6.2,base.run+d*.06)}:{...base,hp:base.hp+Math.min(3,Math.floor(d/3)),run:Math.min(4.85,base.run+d*.07),walk:Math.min(1.9,base.walk+d*.035),damage:Math.min(36,base.damage+d*1.35),recover:Math.max(.34,base.recover-d*.035)};
+  const mesh=makeCreature(type),base=ENEMY_CONFIG[type],d=Math.max(0,floor-1),cfg=type==='gnome'?{...base,run:Math.min(6.2,base.run+d*.06)}:{...base,hp:base.hp+2+Math.min(4,Math.floor(d/3)),run:Math.min(4.85,base.run+d*.07),walk:Math.min(1.9,base.walk+d*.035),damage:Math.min(48,Math.round(base.damage*1.35+d*1.55)),recover:Math.max(.34,base.recover-d*.035)};
   mesh.position.copy(pos);monsterGroup.add(mesh);
   return {type,cfg,mesh,pos:pos.clone(),angle:Math.random()*Math.PI*2,hp:cfg.hp,dead:false,
     path:null,pathGoal:-1,pathTimer:0,patrol:null,wait:rnd(.2,1.1),alert:0,chasing:false,atkCd:0,

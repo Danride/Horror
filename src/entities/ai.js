@@ -78,6 +78,14 @@ function updateGnome(m,dt){
     if(d<.25){const r=roomAt(m.pos.x,m.pos.z);m.patrol=null;m.path=null;m.pathTimer=0;m.patrol=chooseGnomeGoal(m,r);}}
   poseCreature(m.mesh,moved>.002?'run':'idle',dt,moved>.002?1.22:1);return moved;
 }
+// Mummy encounter: prefer the rear sector of the avatar's game camera.
+function mummyRearSector(m){const dx=m.pos.x-player.x,dz=m.pos.z-player.z;return (Math.sin(yaw)*dx+Math.cos(yaw)*dz)/Math.max(.01,Math.hypot(dx,dz))>.35;}
+function mummyFlank(m,dt){
+  m.flankT=(m.flankT||0)-dt;
+  if(m.flankT<=0){m.flankT=.65;const candidates=[];for(const offset of [0,-.65,.65]){const a=yaw+offset,x=player.x+Math.sin(a)*2.4,z=player.z+Math.cos(a)*2.4,i=Math.floor(x/BLOCK),j=Math.floor(z/BLOCK);if(!circleHits(x,z,.35)&&!furnitureHit(x,z)&&bfs(Math.floor(m.pos.x/BLOCK),Math.floor(m.pos.z/BLOCK),i,j))candidates.push({x,z,i,j});}m.flankGoal=candidates[0]||null;m.path=null;}
+  const g=m.flankGoal;if(!g)return 0;
+  const moved=hasLOS(m.pos.x,m.pos.z,g.x,g.z)?moveMonster(m,g.x,g.z,m.cfg.walk*1.6,dt,.12):followMonsterPath(m,[g.i,g.j],m.cfg.walk*1.6,dt);poseCreature(m.mesh,moved>.002?'walk':'idle',dt,1.1);return moved;
+}
 function updateEnemy(m,dt){
   if(m.type==='gnome')return updateGnome(m,dt);
   const cfg=m.cfg,dx=player.x-m.pos.x,dz=player.z-m.pos.z,dist=Math.hypot(dx,dz);
@@ -114,6 +122,10 @@ function updateEnemy(m,dt){
     if(m.attackT>=cfg.duration){m.attackT=0;m.atkCd=cfg.recover;m.path=null;m.pathTimer=0;}
     return 0;
   }
+  if(m.type==='buried'&&m.chasing&&seen&&!mummyRearSector(m)){
+    m.frontWait=(m.frontWait||0)+dt;
+    if(m.frontWait<3.5||dist>cfg.range){const moved=mummyFlank(m,dt);if(m.flankGoal)return moved;}
+  }else m.frontWait=0;
   if(seen&&dist<cfg.range&&m.atkCd<=0){
     m.attackT=.001;m.path=null;turnMonster(m,player.x,player.z,dt);
     poseCreature(m.mesh,'attack',dt,1,0);creatureVoice(m,m.type==='granny'?'cry':'growl');return 0;
